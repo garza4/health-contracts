@@ -40,14 +40,25 @@ public class ContractImpl implements ContractApi{
 		}
 		return successTransfer;
 	}
-	
+	/**
+	 * send funds from source to destination
+	 * @param source
+	 * @param destination
+	 * @param amount
+	 * @return
+	 */
 	private Transaction createTransaction(TransactionBuilderAccount source, String destination, String amount) {
-		Transaction transaction = new Transaction.Builder(source, Network.TESTNET)
+		Transaction transaction = null;
+		try {
+			transaction = new Transaction.Builder(source, Network.TESTNET)
 		        .addOperation(new PaymentOperation.Builder(destination, new AssetTypeNative(), amount).build())
 		        .setBaseFee(Transaction.MIN_BASE_FEE)
 		        .build();
-		// Sign the transaction to prove you are actually the person sending it.
-		transaction.addSignature((DecoratedSignature) source);
+			// Sign the transaction to prove you are actually the person sending it.
+			transaction.addSignature((DecoratedSignature) source);
+		}catch(Exception e) {
+			log.error("could not create transaction",e);
+		}
 		return transaction;
 	}
 	
