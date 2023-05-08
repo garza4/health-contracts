@@ -1,10 +1,7 @@
 package service;
 
-public interface ContractApi {
-	public String requestFunds();
-	
-	public String checkFunds();
-	
-	public String sendFunds();
+import model.FundReq;
 
+public interface ContractApi {
+	public Boolean requestFunds(FundReq req);
 }
