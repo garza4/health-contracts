@@ -1,5 +1,8 @@
 package service;
 
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.stellar.sdk.AssetTypeNative;
@@ -20,6 +23,12 @@ import model.FundReq;
 public class ContractImpl implements ContractApi{
 	@Value("${stellar.net}")	
 	private String stellarServer;
+	@Autowired
+	AccountImpl accountImpl;
+	
+	public ContractImpl(AccountImpl accountImpl) {
+		this.accountImpl=accountImpl;
+	}
 	
 	private String sourceId;
 	Server server = new Server(stellarServer);
@@ -30,13 +39,19 @@ public class ContractImpl implements ContractApi{
 		try {
 			log.info("Transferring {} funds to user",req.getAmount());
 			server.accounts().account(req.getId());
+			
+			if(Integer.valueOf(accountImpl.checkBalance(sourceId).getBalances().get(0).getBalance()) < Integer.valueOf(req.getAmount())) {
+				throw new Exception("Not enough funds for this request, try again later");
+			}
 			AccountResponse sourceAccount = server.accounts().account(sourceId);
 			Transaction transaction = createTransaction(sourceAccount,req.getId(),req.getAmount());
 			response = server.submitTransaction(transaction);
 			log.info("Successfull transfer of funds {}", response.getHash());
 			successTransfer=true;
+		}catch(IOException io) {
+			log.error("stellar returned io error",io);
 		}catch(Exception e) {
-			log.error("Could not transfer funds in the amount of {} ", req.getAmount());
+			log.error("Could not transfer funds in the amount of {} ", req.getAmount(),e);
 		}
 		return successTransfer;
 	}
