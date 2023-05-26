@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.stellar.sdk.AssetTypeNative;
+import org.stellar.sdk.KeyPair;
 import org.stellar.sdk.Network;
 import org.stellar.sdk.PaymentOperation;
 import org.stellar.sdk.Server;
@@ -16,6 +17,7 @@ import org.stellar.sdk.responses.SubmitTransactionResponse;
 import org.stellar.sdk.xdr.DecoratedSignature;
 
 import lombok.extern.slf4j.Slf4j;
+import shadow.net.i2p.crypto.eddsa.EdDSAPublicKey;
 
 import com.health.contracts.model.CheckFundsReq;
 import com.health.contracts.model.FundReq;
@@ -42,13 +44,12 @@ public class ContractImpl implements ContractApi {
 			log.info("Transferring {} funds to user", req.getAmount());
 			server.accounts().account(req.getId());
 
-			if (Integer.valueOf(accountImpl.checkBalance(masterAccount).getBalances().get(0).getBalance()) < Integer
-					.valueOf(req.getAmount())) {
+			if (Double.valueOf(accountImpl.checkBalance(masterAccount).getBalances().get(0).getBalance()) < Double.valueOf(req.getAmount())) {
 				log.error("could not transfer funds at this moment due to lack of funds");
 				throw new Exception("Not enough funds for this request, try again later");
 			}
 			AccountResponse sourceAccount = server.accounts().account(masterAccount);
-			Transaction transaction = createTransaction(sourceAccount, req.getId(), req.getAmount());
+			Transaction transaction = createTransaction(sourceAccount, req.getId(), req.getAmount(),req.getSourceSecret());
 			response = server.submitTransaction(transaction);
 			log.info("Successfull transfer of funds {}", response.getHash());
 			successTransfer = true;
@@ -68,14 +69,15 @@ public class ContractImpl implements ContractApi {
 	 * @param amount
 	 * @return
 	 */
-	private Transaction createTransaction(TransactionBuilderAccount source, String destination, String amount) {
+	private Transaction createTransaction(TransactionBuilderAccount source, String destination, String amount,String secret) {
 		Transaction transaction = null;
 		try {
 			transaction = new Transaction.Builder(source, Network.TESTNET)
 					.addOperation(new PaymentOperation.Builder(destination, new AssetTypeNative(), amount).build())
+			        .setTimeout(180)
 					.setBaseFee(Transaction.MIN_BASE_FEE).build();
 			// Sign the transaction to prove you are actually the person sending it.
-			transaction.addSignature((DecoratedSignature) source);
+			transaction.sign(KeyPair.fromSecretSeed(secret));
 		} catch (Exception e) {
 			log.error("could not create transaction", e);
 		}

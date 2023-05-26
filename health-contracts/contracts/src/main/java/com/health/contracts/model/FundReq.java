@@ -12,7 +12,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@JsonPropertyOrder({"amount","id"})
+@JsonPropertyOrder({"amount","id","secret"})
 public class FundReq implements Serializable{
 	/**
 	 * 
@@ -24,4 +24,7 @@ public class FundReq implements Serializable{
 
 	@JsonProperty("id")
 	String id;
+	
+	@JsonProperty("source_secret")
+	String sourceSecret;
 }
