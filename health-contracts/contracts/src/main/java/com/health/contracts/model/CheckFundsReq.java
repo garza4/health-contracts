@@ -1,4 +1,4 @@
-package model;
+package com.health.contracts.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

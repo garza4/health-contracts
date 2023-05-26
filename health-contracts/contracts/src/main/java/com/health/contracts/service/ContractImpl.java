@@ -1,4 +1,4 @@
-package service;
+package com.health.contracts.service;
 
 import java.io.IOException;
 
@@ -16,47 +16,50 @@ import org.stellar.sdk.responses.SubmitTransactionResponse;
 import org.stellar.sdk.xdr.DecoratedSignature;
 
 import lombok.extern.slf4j.Slf4j;
-import model.FundReq;
+import com.health.contracts.model.FundReq;
 
 @Component
 @Slf4j
-public class ContractImpl implements ContractApi{
-	@Value("${stellar.net}")	
-	private String stellarServer;
+public class ContractImpl implements ContractApi {
+	private String stellarServer = "https://horizon-testnet.stellar.org";
 	@Autowired
 	AccountImpl accountImpl;
-	
+
 	public ContractImpl(AccountImpl accountImpl) {
-		this.accountImpl=accountImpl;
+		this.accountImpl = accountImpl;
 	}
-	
+
 	private String sourceId;
 	Server server = new Server(stellarServer);
+
 	@Override
 	public Boolean requestFunds(FundReq req) {
 		SubmitTransactionResponse response = null;
 		Boolean successTransfer = false;
 		try {
-			log.info("Transferring {} funds to user",req.getAmount());
+			log.info("Transferring {} funds to user", req.getAmount());
 			server.accounts().account(req.getId());
-			
-			if(Integer.valueOf(accountImpl.checkBalance(sourceId).getBalances().get(0).getBalance()) < Integer.valueOf(req.getAmount())) {
+
+			if (Integer.valueOf(accountImpl.checkBalance(sourceId).getBalances().get(0).getBalance()) < Integer
+					.valueOf(req.getAmount())) {
 				throw new Exception("Not enough funds for this request, try again later");
 			}
 			AccountResponse sourceAccount = server.accounts().account(sourceId);
-			Transaction transaction = createTransaction(sourceAccount,req.getId(),req.getAmount());
+			Transaction transaction = createTransaction(sourceAccount, req.getId(), req.getAmount());
 			response = server.submitTransaction(transaction);
 			log.info("Successfull transfer of funds {}", response.getHash());
-			successTransfer=true;
-		}catch(IOException io) {
-			log.error("stellar returned io error",io);
-		}catch(Exception e) {
-			log.error("Could not transfer funds in the amount of {} ", req.getAmount(),e);
+			successTransfer = true;
+		} catch (IOException io) {
+			log.error("stellar returned io error", io);
+		} catch (Exception e) {
+			log.error("Could not transfer funds in the amount of {} ", req.getAmount(), e);
 		}
 		return successTransfer;
 	}
+
 	/**
 	 * send funds from source to destination
+	 * 
 	 * @param source
 	 * @param destination
 	 * @param amount
@@ -66,15 +69,14 @@ public class ContractImpl implements ContractApi{
 		Transaction transaction = null;
 		try {
 			transaction = new Transaction.Builder(source, Network.TESTNET)
-		        .addOperation(new PaymentOperation.Builder(destination, new AssetTypeNative(), amount).build())
-		        .setBaseFee(Transaction.MIN_BASE_FEE)
-		        .build();
+					.addOperation(new PaymentOperation.Builder(destination, new AssetTypeNative(), amount).build())
+					.setBaseFee(Transaction.MIN_BASE_FEE).build();
 			// Sign the transaction to prove you are actually the person sending it.
 			transaction.addSignature((DecoratedSignature) source);
-		}catch(Exception e) {
-			log.error("could not create transaction",e);
+		} catch (Exception e) {
+			log.error("could not create transaction", e);
 		}
 		return transaction;
 	}
-	
+
 }

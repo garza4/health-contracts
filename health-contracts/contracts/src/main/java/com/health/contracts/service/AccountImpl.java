@@ -1,39 +1,38 @@
-package service;
+package com.health.contracts.service;
+
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.stellar.sdk.KeyPair;
 import org.stellar.sdk.Server;
 import org.stellar.sdk.responses.AccountResponse;
 import org.stellar.sdk.responses.AccountResponse.Balance;
 
 import lombok.extern.slf4j.Slf4j;
-import model.BalanceList;
-import model.StellarAccount;;
+import com.health.contracts.model.BalanceList;
+import com.health.contracts.model.StellarAccount;
 
 @Slf4j // or: @Log @CommonsLog @Log4j @Log4j2 @XSlf4j
-public class AccountImpl implements Account{
-	@Value("${stellar.net}")	
-	private String stellarServer;
+@Component
+public class AccountImpl implements Account {
+	private String stellarServer = "https://horizon-testnet.stellar.org";
 	private final Server server = new Server(stellarServer);
-
 
 	@Override
 	public StellarAccount createAccount() {
 		StellarAccount stellAcct = null;
 		try {
-		KeyPair pair = KeyPair.random();
-		stellAcct = new StellarAccount(
-					new String(pair.getSecretSeed()),
-					new String(pair.getAccountId()),
+			KeyPair pair = KeyPair.random();
+			stellAcct = new StellarAccount(new String(pair.getSecretSeed()), new String(pair.getAccountId()),
 					"Keep these values in a secure location. They will not be saved on this system");
-		}catch(Exception e) {
-			log.error("Oof could not create an account",e);
+		} catch (Exception e) {
+			log.error("Oof could not create an account", e);
 		}
-		return stellAcct;	
+		return stellAcct;
 
 	}
-	
+
 	@Override
 	public BalanceList checkBalance(String stellarAcct) {
 		BalanceList balList = new BalanceList();
@@ -41,11 +40,11 @@ public class AccountImpl implements Account{
 			AccountResponse acct = server.accounts().account(stellarAcct);
 
 			balList.setBalances(new ArrayList<Balance>());
-			for(AccountResponse.Balance balance : acct.getBalances()) {
+			for (AccountResponse.Balance balance : acct.getBalances()) {
 				balList.getBalances().add(balance);
 			}
-		}catch(Exception e) {
-			log.error("there was an issue checking the user's balance",e);
+		} catch (Exception e) {
+			log.error("there was an issue checking the user's balance", e);
 		}
 		return balList;
 	}
