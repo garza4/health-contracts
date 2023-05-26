@@ -1,0 +1,5 @@
+{
+    "message": "Keep these values in a secure location. They will not be saved on this system",
+    "secret": "SA3JC23BU3YIEFXQ2GT2AJ7UUAVZZIZ2MP7OS7TM3MNKTUNH3PTQG54B",
+    "acct_id": "GDULNG4FSBZNRELM22Y4YQRLYWL3VAIWEAW6G7AUYMNCG3FM2VUL5L7K"
+}
