@@ -31,7 +31,7 @@ public class ContractImpl implements ContractApi {
 		this.accountImpl = accountImpl;
 	}
 
-	private String baseAccount;
+	private final String masterAccount ="GCKJLDPW6RUGTWCKZ5ZTLHAXU7NGPGELZQHVVNQUKSCSCK5NK7TQE74Z";
 	Server server = new Server(stellarServer);
 
 	@Override
@@ -42,11 +42,12 @@ public class ContractImpl implements ContractApi {
 			log.info("Transferring {} funds to user", req.getAmount());
 			server.accounts().account(req.getId());
 
-			if (Integer.valueOf(accountImpl.checkBalance(baseAccount).getBalances().get(0).getBalance()) < Integer
+			if (Integer.valueOf(accountImpl.checkBalance(masterAccount).getBalances().get(0).getBalance()) < Integer
 					.valueOf(req.getAmount())) {
+				log.error("could not transfer funds at this moment due to lack of funds");
 				throw new Exception("Not enough funds for this request, try again later");
 			}
-			AccountResponse sourceAccount = server.accounts().account(baseAccount);
+			AccountResponse sourceAccount = server.accounts().account(masterAccount);
 			Transaction transaction = createTransaction(sourceAccount, req.getId(), req.getAmount());
 			response = server.submitTransaction(transaction);
 			log.info("Successfull transfer of funds {}", response.getHash());
