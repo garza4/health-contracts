@@ -16,6 +16,8 @@ import org.stellar.sdk.responses.SubmitTransactionResponse;
 import org.stellar.sdk.xdr.DecoratedSignature;
 
 import lombok.extern.slf4j.Slf4j;
+
+import com.health.contracts.model.CheckFundsReq;
 import com.health.contracts.model.FundReq;
 
 @Component
@@ -29,7 +31,7 @@ public class ContractImpl implements ContractApi {
 		this.accountImpl = accountImpl;
 	}
 
-	private String sourceId;
+	private String baseAccount;
 	Server server = new Server(stellarServer);
 
 	@Override
@@ -40,11 +42,11 @@ public class ContractImpl implements ContractApi {
 			log.info("Transferring {} funds to user", req.getAmount());
 			server.accounts().account(req.getId());
 
-			if (Integer.valueOf(accountImpl.checkBalance(sourceId).getBalances().get(0).getBalance()) < Integer
+			if (Integer.valueOf(accountImpl.checkBalance(baseAccount).getBalances().get(0).getBalance()) < Integer
 					.valueOf(req.getAmount())) {
 				throw new Exception("Not enough funds for this request, try again later");
 			}
-			AccountResponse sourceAccount = server.accounts().account(sourceId);
+			AccountResponse sourceAccount = server.accounts().account(baseAccount);
 			Transaction transaction = createTransaction(sourceAccount, req.getId(), req.getAmount());
 			response = server.submitTransaction(transaction);
 			log.info("Successfull transfer of funds {}", response.getHash());

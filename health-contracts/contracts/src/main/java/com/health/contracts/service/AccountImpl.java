@@ -11,6 +11,7 @@ import org.stellar.sdk.responses.AccountResponse.Balance;
 
 import lombok.extern.slf4j.Slf4j;
 import com.health.contracts.model.BalanceList;
+import com.health.contracts.model.CheckFundsReq;
 import com.health.contracts.model.StellarAccount;
 
 @Slf4j // or: @Log @CommonsLog @Log4j @Log4j2 @XSlf4j
@@ -35,18 +36,25 @@ public class AccountImpl implements Account {
 
 	@Override
 	public BalanceList checkBalance(String stellarAcct) {
-		BalanceList balList = new BalanceList();
+		BalanceList balanceList = new BalanceList();
+		Boolean hasBalance = false;
+		log.info("checking account for {}",stellarAcct);
 		try {
 			AccountResponse acct = server.accounts().account(stellarAcct);
-
-			balList.setBalances(new ArrayList<Balance>());
-			for (AccountResponse.Balance balance : acct.getBalances()) {
-				balList.getBalances().add(balance);
+			if(acct.getBalances().length ==0) {
+				log.info("no balances");
+			}else hasBalance=true;
+			if(hasBalance) {
+				balanceList.setBalances(new ArrayList<Balance>());
+				for (AccountResponse.Balance balance : acct.getBalances()) {
+					balanceList.getBalances().add(balance);
+				}
 			}
+			
 		} catch (Exception e) {
 			log.error("there was an issue checking the user's balance", e);
 		}
-		return balList;
+		return balanceList;
 	}
 
 	@Override
