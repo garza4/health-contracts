@@ -3,7 +3,6 @@ package com.health.contracts.service;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.stellar.sdk.AssetTypeNative;
 import org.stellar.sdk.KeyPair;
@@ -14,13 +13,11 @@ import org.stellar.sdk.Transaction;
 import org.stellar.sdk.TransactionBuilderAccount;
 import org.stellar.sdk.responses.AccountResponse;
 import org.stellar.sdk.responses.SubmitTransactionResponse;
-import org.stellar.sdk.xdr.DecoratedSignature;
 
 import lombok.extern.slf4j.Slf4j;
-import shadow.net.i2p.crypto.eddsa.EdDSAPublicKey;
 
-import com.health.contracts.model.CheckFundsReq;
 import com.health.contracts.model.FundReq;
+import com.health.contracts.model.ReqFundsResp;
 
 @Component
 @Slf4j
@@ -33,32 +30,33 @@ public class ContractImpl implements ContractApi {
 		this.accountImpl = accountImpl;
 	}
 
-	private final String masterAccount ="GCKJLDPW6RUGTWCKZ5ZTLHAXU7NGPGELZQHVVNQUKSCSCK5NK7TQE74Z";
 	Server server = new Server(stellarServer);
 
 	@Override
-	public Boolean requestFunds(FundReq req) {
+	public ReqFundsResp requestFunds(FundReq req) {
 		SubmitTransactionResponse response = null;
-		Boolean successTransfer = false;
+		ReqFundsResp transfer = new ReqFundsResp();
 		try {
 			log.info("Transferring {} funds to user", req.getAmount());
 			server.accounts().account(req.getId());
 
-			if (Double.valueOf(accountImpl.checkBalance(masterAccount).getBalances().get(0).getBalance()) < Double.valueOf(req.getAmount())) {
+			if (Double.valueOf(accountImpl.checkBalance(req.getPublicMasterAccount()).getBalances().get(0).getBalance()) < Double.valueOf(req.getAmount())) {
 				log.error("could not transfer funds at this moment due to lack of funds");
 				throw new Exception("Not enough funds for this request, try again later");
 			}
-			AccountResponse sourceAccount = server.accounts().account(masterAccount);
+			AccountResponse sourceAccount = server.accounts().account(req.getPublicMasterAccount());
 			Transaction transaction = createTransaction(sourceAccount, req.getId(), req.getAmount(),req.getSourceSecret());
 			response = server.submitTransaction(transaction);
 			log.info("Successfull transfer of funds {}", response.getHash());
-			successTransfer = true;
+			transfer.setAmount(req.getAmount());
+			transfer.setDestination(req.getId());
+			transfer.setFrom(req.getPublicMasterAccount());
 		} catch (IOException io) {
 			log.error("stellar returned io error", io);
 		} catch (Exception e) {
 			log.error("Could not transfer funds in the amount of {} ", req.getAmount(), e);
 		}
-		return successTransfer;
+		return transfer;
 	}
 
 	/**
@@ -69,6 +67,7 @@ public class ContractImpl implements ContractApi {
 	 * @param amount
 	 * @return
 	 */
+	@SuppressWarnings("deprecation")
 	private Transaction createTransaction(TransactionBuilderAccount source, String destination, String amount,String secret) {
 		Transaction transaction = null;
 		try {

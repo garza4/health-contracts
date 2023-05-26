@@ -27,4 +27,7 @@ public class FundReq implements Serializable{
 	
 	@JsonProperty("source_secret")
 	String sourceSecret;
+	
+	@JsonProperty("source_public")
+	String publicMasterAccount;
 }
