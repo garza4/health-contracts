@@ -2,7 +2,7 @@ package com.health.contracts.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.health.contracts.entity.User;
+import com.health.contracts.entity.HealthUser;
 import com.health.contracts.repository.UserRepository;
 
 public class UserImpl implements Users{
@@ -13,7 +13,7 @@ public class UserImpl implements Users{
 	}
 
 	@Override
-	public User getUsers(String uid) {
+	public HealthUser getUsers(String uid) {
 		// TODO Auto-generated method stub
 		return userRepo.findByUid(uid);
 	}

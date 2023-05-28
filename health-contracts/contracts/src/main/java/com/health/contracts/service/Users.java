@@ -1,8 +1,8 @@
 package com.health.contracts.service;
 
-import com.health.contracts.entity.User;
+import com.health.contracts.entity.HealthUser;
 
 public interface Users {
-	User getUsers(String uid);
+	HealthUser getUsers(String uid);
 
 }
