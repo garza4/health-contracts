@@ -2,6 +2,8 @@ package com.health.contracts;
 
 import java.io.Serializable;
 
+import org.springframework.stereotype.Component;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Component
 public class UserContext implements Serializable{
 	/**
 	 * 

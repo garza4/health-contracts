@@ -31,10 +31,13 @@ import org.springframework.security.core.userdetails.User;
 @Component
 @Slf4j
 public class SecurityFilter extends OncePerRequestFilter{
-	@Autowired
-	UserImpl userImpl;
+	private UserImpl userImpl;
 	
-	private AuthenticationManager authManager;
+//	private AuthenticationManager authManager;
+	@Autowired
+	public SecurityFilter(UserImpl userImpl) {
+		this.userImpl = userImpl;
+	}
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
