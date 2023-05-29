@@ -1,6 +1,10 @@
 package com.health.contracts.entity;
 
 
+import java.math.BigInteger;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -8,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,11 +23,12 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Builder
 public class HealthUser {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="upkid")
-	String upkid;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="upkid",columnDefinition = "BIGINT")
+	BigInteger upkid;
     @Column(name="uid")
 	String uName;
     @Column(name="role")
