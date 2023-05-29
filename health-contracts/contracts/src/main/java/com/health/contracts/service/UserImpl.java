@@ -20,7 +20,7 @@ public class UserImpl implements Users{
 
 	@Override
 	public HealthUser getUsers(String uid) {
-		return userRepo.findByUid(uid);
+		return userRepo.getReferenceById(uid);
 	}
 
 }
