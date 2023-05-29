@@ -19,18 +19,18 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.health.contracts.model.FundReq;
 import com.health.contracts.model.ReqFundsResp;
-import com.health.contracts.security.IAuthenticationFacade;
+//import com.health.contracts.security.IAuthenticationFacade;
 
 @Component
 @Slf4j
 public class ContractImpl implements ContractApi {
 	private String stellarServer = "https://horizon-testnet.stellar.org";
 	private AccountImpl accountImpl;
-	private IAuthenticationFacade userContext;
+//	private IAuthenticationFacade userContext;
 	@Autowired
-	public ContractImpl(AccountImpl accountImpl,IAuthenticationFacade userContext) {
+	public ContractImpl(AccountImpl accountImpl) {
 		this.accountImpl = accountImpl;
-		this.userContext = userContext;
+//		this.userContext = userContext;
 	}
 
 	Server server = new Server(stellarServer);
