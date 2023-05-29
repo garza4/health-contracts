@@ -2,6 +2,7 @@ package com.health.contracts.service;
 
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.stellar.sdk.KeyPair;
 import org.stellar.sdk.Server;
@@ -11,17 +12,18 @@ import org.stellar.sdk.responses.AccountResponse.Balance;
 import lombok.extern.slf4j.Slf4j;
 import com.health.contracts.model.BalanceList;
 import com.health.contracts.model.StellarAccount;
-import com.health.contracts.security.IAuthenticationFacade;
+//import com.health.contracts.security.IAuthenticationFacade;
 
 @Slf4j // or: @Log @CommonsLog @Log4j @Log4j2 @XSlf4j
 @Component
 public class AccountImpl implements Account {
 	private String stellarServer = "https://horizon-testnet.stellar.org";
 	private final Server server = new Server(stellarServer);
-	private IAuthenticationFacade userContext;
+//	private IAuthenticationFacade userContext;
 	
-	public AccountImpl(IAuthenticationFacade userContext) {
-		this.userContext=userContext;
+	@Autowired
+	public AccountImpl() {
+//		this.userContext=userContext;
 	}
 
 	@Override
@@ -42,7 +44,7 @@ public class AccountImpl implements Account {
 	public BalanceList checkBalance(String stellarAcct) {
 		BalanceList balanceList = new BalanceList();
 		Boolean hasBalance = false;
-		log.info("checking account for {}",stellarAcct);
+//		log.info("checking account for {}",userContext.getUserContext().getUid());
 		try {
 			AccountResponse acct = server.accounts().account(stellarAcct);
 			if(acct.getBalances().length ==0) {
