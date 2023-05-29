@@ -20,8 +20,8 @@ import lombok.Setter;
 public class VisitationEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="visit_ref",columnDefinition = "BIGINT")
-	BigInteger visitRef;
+	@Column(columnDefinition = "BIGINT")
+	Long visitRef;
 	
 	@Column(name="uid")
 	String uid;
