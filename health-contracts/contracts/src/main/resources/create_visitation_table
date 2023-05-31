@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS public.h_visitation_log
+(
+    visit_ref bigint NOT NULL DEFAULT nextval('h_visitation_log_visit_ref_seq'::regclass),
+    comments character varying(255) COLLATE pg_catalog."default",
+    requested_funds character varying(255) COLLATE pg_catalog."default",
+    service character varying(255) COLLATE pg_catalog."default",
+    uid character varying(255) COLLATE pg_catalog."default",
+    CONSTRAINT h_visitation_log_pkey PRIMARY KEY (visit_ref)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.h_visitation_log
+    OWNER to postgres;
