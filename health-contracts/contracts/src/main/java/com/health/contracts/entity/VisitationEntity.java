@@ -34,5 +34,8 @@ public class VisitationEntity {
 	
 	@Column(name="requested_funds")
 	String requestedFunds;
+        
+        @Column(name="upkid")
+        Long upkid;
 
 }

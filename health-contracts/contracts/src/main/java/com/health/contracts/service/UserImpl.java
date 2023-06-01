@@ -28,14 +28,14 @@ public class UserImpl implements Users{
 	@Override
 	public void saveUser(SaveUserReq user) {
 		try {
-			HealthUser hUser = HealthUser.builder()
-					.upkid(null)
-					.company(user.getCompany())
-					.firstName(user.getFirstName())
-					.lastName(user.getLastName())
-					.role(user.getRole())
-					.uName(user.getUName())
-					.build();
+                    HealthUser hUser = HealthUser.builder()
+                        .upkid(null)
+                        .company(user.getCompany())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .role(user.getRole())
+                        .uName(user.getUName())
+                        .build();
 			userRepo.save(hUser);
 		}catch(Exception e) {
 			log.error("could not save user",e);
