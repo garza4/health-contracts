@@ -27,8 +27,7 @@ import lombok.ToString;
 public class HealthUser {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="upkid",columnDefinition = "BIGINT")
-	BigInteger upkid;
+	Long upkid;
     @Column(name="uid")
 	String uName;
     @Column(name="role")
