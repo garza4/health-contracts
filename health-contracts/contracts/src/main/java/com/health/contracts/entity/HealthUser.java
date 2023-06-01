@@ -1,12 +1,6 @@
 package com.health.contracts.entity;
 
-
-import java.math.BigInteger;
-
-import org.hibernate.annotations.GenericGenerator;
-
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,15 +19,15 @@ import lombok.ToString;
 @ToString
 @Builder
 public class HealthUser {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long upkid;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long upkid;
     @Column(name="uid")
-	String uName;
+    String uName;
     @Column(name="role")
-	String role;
+    String role;
     @Column(name="company")
-	String company;
+    String company;
     @Column(name="first_name")
     String firstName;
     @Column(name="last_name")
