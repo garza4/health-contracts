@@ -1,5 +1,6 @@
 package com.health.contracts.service;
 
+import com.health.contracts.entity.FundReceiptEntity;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.health.contracts.model.FundReq;
 import com.health.contracts.model.ReqFundsResp;
+import com.health.contracts.repository.ReceiptRepository;
+import java.sql.Timestamp;
 //import com.health.contracts.security.IAuthenticationFacade;
 
 @Component
@@ -27,10 +30,12 @@ public class ContractImpl implements ContractApi {
 	private String stellarServer = "https://horizon-testnet.stellar.org";
 	private AccountImpl accountImpl;
 //	private IAuthenticationFacade userContext;
+        private ReceiptRepository receiptRepo;
 	@Autowired
-	public ContractImpl(AccountImpl accountImpl) {
+	public ContractImpl(AccountImpl accountImpl,ReceiptRepository receiptRepo) {
 		this.accountImpl = accountImpl;
 //		this.userContext = userContext;
+                this.receiptRepo=receiptRepo;
 	}
 
 	Server server = new Server(stellarServer);
@@ -54,6 +59,8 @@ public class ContractImpl implements ContractApi {
 			transfer.setAmount(req.getAmount());
 			transfer.setDestination(req.getId());
 			transfer.setFrom(req.getPublicMasterAccount());
+                        receiptRepo.save(new FundReceiptEntity(null,new Timestamp(System.currentTimeMillis()),req.getAmount(),req.getAdminUser(),req.getPatient()));
+                        
 		} catch (IOException io) {
 			log.error("stellar returned io error", io);
 		} catch (Exception e) {
