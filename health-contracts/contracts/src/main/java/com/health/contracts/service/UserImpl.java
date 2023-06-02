@@ -22,7 +22,13 @@ public class UserImpl implements Users{
 
 	@Override
 	public HealthUser getUsers(String uid) {
-		return userRepo.getReferenceById(uid);
+            HealthUser user = null;
+            try{
+                user = userRepo.getUserByUName(uid);
+            }catch(Exception e){
+                log.error("fetching user did not work",e);
+            }
+            return user;
 	}
 
 	@Override

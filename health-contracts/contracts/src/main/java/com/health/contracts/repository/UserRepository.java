@@ -5,7 +5,12 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.health.contracts.entity.HealthUser;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 @Repository
-public interface UserRepository extends JpaRepository<HealthUser,String>{
+public interface UserRepository extends CrudRepository<HealthUser,String>{
+    @Query(value="select * from h_user where uid=:unm",nativeQuery=true)
+    HealthUser getUserByUName(@Param("unm") String unm);
     
 }

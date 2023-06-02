@@ -12,7 +12,7 @@ public class AdminController {
 	@Autowired
 	private AdminImpl adminImpl;
 	
-	@PutMapping("/admin/log-visit")
+	@PutMapping(value="/admin/log-visit")
 	public void logVisitation(@RequestBody LogVisitationReq req) {
 		adminImpl.logVisitation(req);
 	}

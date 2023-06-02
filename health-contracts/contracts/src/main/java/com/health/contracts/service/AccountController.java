@@ -19,7 +19,7 @@ public class AccountController {
 		return accountImpl.checkBalance(account);
 	}
 
-	@GetMapping("/account/create")
+	@GetMapping(value="/account/create")
 	public StellarAccount createAccount() {
 		return accountImpl.createAccount();
 	}
