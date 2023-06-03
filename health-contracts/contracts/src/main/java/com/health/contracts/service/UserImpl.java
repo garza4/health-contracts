@@ -7,6 +7,7 @@ import com.health.contracts.UserContext;
 import com.health.contracts.entity.HealthUser;
 import com.health.contracts.model.SaveUserReq;
 import com.health.contracts.repository.UserRepository;
+import com.health.contracts.security.IAuthenticationFacade;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,14 +15,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserImpl implements Users{
 	private UserRepository userRepo;
-//	private IAuthenticationFacade userContext;
+	private IAuthenticationFacade userContext;
 	@Autowired
-	public UserImpl(UserRepository userRepo) {
+	public UserImpl(UserRepository userRepo, IAuthenticationFacade userContext) {
 		this.userRepo = userRepo;
+                this.userContext=userContext;
 	}
 
 	@Override
 	public HealthUser getUsers(String uid) {
+            log.info("user is: " +  userContext.getUserContext().getUid());
             HealthUser user = null;
             try{
                 user = userRepo.getUserByUName(uid);

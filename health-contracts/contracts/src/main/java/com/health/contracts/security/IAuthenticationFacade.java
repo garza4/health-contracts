@@ -1,9 +1,9 @@
 package com.health.contracts.security;
 
-//import org.springframework.security.core.Authentication;
-//
-//import com.health.contracts.UserContext;
+import org.springframework.security.core.Authentication;
 
-//public interface IAuthenticationFacade {
-//	UserContext getUserContext();
-//}
+import com.health.contracts.UserContext;
+
+public interface IAuthenticationFacade {
+	UserContext getUserContext();
+}
