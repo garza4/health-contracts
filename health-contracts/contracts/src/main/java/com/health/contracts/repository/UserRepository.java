@@ -13,4 +13,7 @@ public interface UserRepository extends CrudRepository<HealthUser,String>{
     @Query(value="select * from h_user where uid=:unm",nativeQuery=true)
     HealthUser getUserByUName(@Param("unm") String unm);
     
+    @Query(value="select * from h_user where uid=:unm and password=:pwd",nativeQuery=true)
+    HealthUser getUserByUNameAndPwd(@Param("unm") String unm, @Param("pwd") String pwd);
+    
 }

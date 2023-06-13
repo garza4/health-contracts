@@ -4,15 +4,11 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.health.contracts.entity.HealthUser;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 @Getter
 @Setter
-@JsonPropertyOrder({"company","l_nm","f_nm","role","u_nm"})
+@JsonPropertyOrder({"company","l_nm","f_nm","role","u_nm","password"})
 public class SaveUserReq implements Serializable{
 	/**
 	 * 
@@ -28,5 +24,7 @@ public class SaveUserReq implements Serializable{
 	String role;
 	@JsonProperty("u_nm")
 	String uName;
+        @JsonProperty("password")
+        String password;
 	
 }
