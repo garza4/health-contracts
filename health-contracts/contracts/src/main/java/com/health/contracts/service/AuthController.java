@@ -28,13 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtils;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder PasswordEncoder;
+    private final AuthenticationManager AuthenticationManager;
 
     
     @PostMapping("/authenticate")
     public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest req){
-        authenticationManager.authenticate(
+        AuthenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.getUid(),req.getPassword())
         );
         final UserDetails user = userDetailsService.loadUserByUsername(req.getUid());
