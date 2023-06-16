@@ -51,9 +51,9 @@ public class JwtTokenFilter extends OncePerRequestFilter{
         if(uid != null && SecurityContextHolder.getContext().getAuthentication() != null){
             HealthUser userDetails = userImpl.getUsers(uid);
             HealthUserDetails hUserDetails = new HealthUserDetails();
-            //TODO: what the heck is going on here
-//            hUserDetails.setUserName(userDetails.getUName());
-//            hUserDetails.setPassword(userDetails.getPassword());
+            hUserDetails.setUser(userDetails);
+            hUserDetails.setUserName(userDetails.getUName());
+//            hUserDetails.setPassword()
             if(jwtUtils.validateToken(jwtToken, hUserDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,null,hUserDetails.getAuthorities()

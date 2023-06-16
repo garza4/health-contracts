@@ -5,14 +5,14 @@
 package com.health.contracts.model;
 
 import com.health.contracts.entity.HealthUser;
+import java.util.ArrayList;
 import java.util.Collection;
-import lombok.AllArgsConstructor;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -34,22 +34,22 @@ public class HealthUserDetails implements UserDetails{
 
     @Override
     public String getUsername() {
-        return this.userName;    
+        return this.userName;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
@@ -59,7 +59,9 @@ public class HealthUserDetails implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        List<GrantedAuthority> auth = new ArrayList();
+        auth.add(new SimpleGrantedAuthority(user.getRole()));
+        return auth;
      }
 
     @Override

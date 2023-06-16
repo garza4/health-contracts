@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfiguration{
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests((auth)-> 
-                auth.requestMatchers("/**").permitAll()
+                auth.requestMatchers("/api/v1/auth/**").permitAll()
                 .anyRequest()
                 .authenticated()
         )   .sessionManagement((session)->session
@@ -71,10 +71,18 @@ public class SecurityConfig extends WebSecurityConfiguration{
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
                 try{
+                    PasswordEncoder encoder = PasswordEncoder();
                     log.info("get user details from db");
                     HealthUser authUser = userRepo.getUserByUName(username);
-                    return new HealthUserDetails(authUser);
+                    log.info(authUser.toString());
+                    HealthUserDetails hUser = new HealthUserDetails();
+                    hUser.setUser(authUser);
+                    hUser.setPassword(encoder.encode(authUser.getPassword()));
+                    hUser.setUserName(authUser.getUName());
+                    log.info("health user: " + hUser.getUser());
+                    return hUser;
                 }catch(UsernameNotFoundException e){
+                    log.error("could not find user");
                     throw new UsernameNotFoundException("username not found");
                 }
             }

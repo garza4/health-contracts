@@ -6,6 +6,7 @@ package com.health.contracts.service;
 
 import com.health.contracts.config.JwtUtil;
 import com.health.contracts.dto.AuthenticationRequest;
+import com.health.contracts.model.HealthUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -37,14 +38,20 @@ public class AuthController {
     @PostMapping("/authenticate")
     public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest req){
         log.info("request is: " + req.toString());
-        
-        AuthenticationManager.authenticate(
+        try{
+            AuthenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.getUid(),req.getPassword())
         );
-        final UserDetails user = userDetailsService.loadUserByUsername(req.getUid());
-        if(user != null){
-            return ResponseEntity.ok(jwtUtils.generateToken(user));
+            final HealthUserDetails user = (HealthUserDetails) userDetailsService.loadUserByUsername(req.getUid());
+            log.info("got user: " + user.toString());
+            if(user != null){
+                log.info("user is not null");
+                return ResponseEntity.ok(jwtUtils.generateToken(user));
+            }
+        }catch(Exception e){
+            log.error("exception authenticating user",e);
         }
+        
         return ResponseEntity.status(400).body("Something happened");
     }
     
