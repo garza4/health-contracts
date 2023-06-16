@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +27,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtTokenFilter extends OncePerRequestFilter{
 
     private final UserImpl userImpl;
@@ -36,6 +38,7 @@ public class JwtTokenFilter extends OncePerRequestFilter{
             HttpServletResponse response, 
             FilterChain filterChain) throws ServletException, IOException {
         final String header =request.getHeader(AUTHORIZATION);
+        log.debug("The header is: " + header);
         final String uid;
         final String jwtToken;
         
@@ -48,8 +51,9 @@ public class JwtTokenFilter extends OncePerRequestFilter{
         if(uid != null && SecurityContextHolder.getContext().getAuthentication() != null){
             HealthUser userDetails = userImpl.getUsers(uid);
             HealthUserDetails hUserDetails = new HealthUserDetails();
-            hUserDetails.setUserName(userDetails.getUName());
-            hUserDetails.setPassword(userDetails.getPassword());
+            //TODO: what the heck is going on here
+//            hUserDetails.setUserName(userDetails.getUName());
+//            hUserDetails.setPassword(userDetails.getPassword());
             if(jwtUtils.validateToken(jwtToken, hUserDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,null,hUserDetails.getAuthorities()

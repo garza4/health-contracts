@@ -7,6 +7,7 @@ package com.health.contracts.service;
 import com.health.contracts.config.JwtUtil;
 import com.health.contracts.dto.AuthenticationRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtils;
@@ -34,6 +36,8 @@ public class AuthController {
     
     @PostMapping("/authenticate")
     public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest req){
+        log.info("request is: " + req.toString());
+        
         AuthenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.getUid(),req.getPassword())
         );

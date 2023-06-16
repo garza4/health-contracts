@@ -4,60 +4,66 @@
  */
 package com.health.contracts.model;
 
+import com.health.contracts.entity.HealthUser;
 import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  *
  * @author Bobby
  */
-@Getter
-@Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@Setter
+@Getter
 public class HealthUserDetails implements UserDetails{
     private String password;
     private String userName;
-    private Collection<? extends GrantedAuthority> authorities; 
+    private HealthUser user;
+    
+    public HealthUserDetails(HealthUser user){
+        this.user = user;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.userName;    
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+        return null;
+     }
 
     @Override
     public String getPassword() {
         return this.password;
     }
-
-    @Override
-    public String getUsername() {
-        return this.userName;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean isEnabled() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    
 }

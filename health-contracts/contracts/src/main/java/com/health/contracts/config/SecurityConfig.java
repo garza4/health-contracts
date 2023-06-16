@@ -4,6 +4,7 @@ import com.health.contracts.entity.HealthUser;
 import com.health.contracts.model.HealthUserDetails;
 import com.health.contracts.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,17 +26,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig extends WebSecurityConfiguration{
     private final JwtTokenFilter jwtAuthFilter;
     private final UserRepository userRepo;
+//    private final UserAuth userAuth;
     
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {        
-        http.authorizeHttpRequests((auth)-> auth
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests((auth)-> 
+                auth.requestMatchers("/**").permitAll()
                 .anyRequest()
-                .authenticated()  
-        ).sessionManagement((session)->session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .authenticated()
+        )   .sessionManagement((session)->session
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         ).authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -65,11 +71,9 @@ public class SecurityConfig extends WebSecurityConfiguration{
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
                 try{
-                    HealthUser user = userRepo.getUserByUName(username);
-                    HealthUserDetails hUDetails = new HealthUserDetails();
-                    hUDetails.setUserName(user.getUName());
-                    hUDetails.setPassword(user.getPassword());
-                    return hUDetails;
+                    log.info("get user details from db");
+                    HealthUser authUser = userRepo.getUserByUName(username);
+                    return new HealthUserDetails(authUser);
                 }catch(UsernameNotFoundException e){
                     throw new UsernameNotFoundException("username not found");
                 }

@@ -7,6 +7,7 @@ package com.health.contracts.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
@@ -15,6 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class AuthenticationRequest {
     private String uid;
     private String password;
