@@ -39,12 +39,10 @@ public class AuthController {
     public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest req){
         log.info("request is: " + req.toString());
         try{
-            AuthenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(req.getUid(),req.getPassword())
-        );
+            AuthenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUid(),req.getPassword()));
             final HealthUserDetails user = (HealthUserDetails) userDetailsService.loadUserByUsername(req.getUid());
             log.info("got user: " + user.toString());
-            if(user != null){
+            if(user != null && PasswordEncoder.matches(req.getPassword(), user.getPassword())){
                 log.info("user is not null");
                 return ResponseEntity.ok(jwtUtils.generateToken(user));
             }

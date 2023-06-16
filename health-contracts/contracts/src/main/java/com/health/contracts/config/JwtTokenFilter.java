@@ -7,6 +7,8 @@ package com.health.contracts.config;
 import com.health.contracts.entity.HealthUser;
 import com.health.contracts.model.HealthUserDetails;
 import com.health.contracts.service.UserImpl;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,17 +40,19 @@ public class JwtTokenFilter extends OncePerRequestFilter{
             HttpServletRequest request, 
             HttpServletResponse response, 
             FilterChain filterChain) throws ServletException, IOException {
-        final String header =request.getHeader(AUTHORIZATION);
-        log.debug("The header is: " + header);
+        log.debug("" + request.getHeaderNames());
+        final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        Boolean headerisNull = header == null;
         final String uid;
         final String jwtToken;
         
-        if(header == null || !header.startsWith("Bearer")){
+        if(headerisNull){
             filterChain.doFilter(request,response);
             return;
         }
         jwtToken = header.substring(7);
         uid = jwtUtils.extractUsername(jwtToken);
+        log.debug("uid is: " + uid);
         if(uid != null && SecurityContextHolder.getContext().getAuthentication() != null){
             HealthUser userDetails = userImpl.getUsers(uid);
             HealthUserDetails hUserDetails = new HealthUserDetails();

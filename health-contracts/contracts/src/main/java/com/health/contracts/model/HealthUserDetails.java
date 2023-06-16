@@ -11,6 +11,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -23,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 @Setter
 @Getter
+@ToString
 public class HealthUserDetails implements UserDetails{
     private String password;
     private String userName;

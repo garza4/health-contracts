@@ -77,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfiguration{
                     log.info(authUser.toString());
                     HealthUserDetails hUser = new HealthUserDetails();
                     hUser.setUser(authUser);
-                    hUser.setPassword(encoder.encode(authUser.getPassword()));
+                    hUser.setPassword(authUser.getPassword());
                     hUser.setUserName(authUser.getUName());
                     log.info("health user: " + hUser.getUser());
                     return hUser;
