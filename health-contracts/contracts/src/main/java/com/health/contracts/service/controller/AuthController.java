@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.health.contracts.service;
+package com.health.contracts.service.controller;
 
 import com.health.contracts.config.JwtUtil;
 import com.health.contracts.dto.AuthenticationRequest;

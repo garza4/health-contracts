@@ -1,4 +1,4 @@
-package com.health.contracts.service;
+package com.health.contracts.service.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.health.contracts.model.FundReq;
 import com.health.contracts.model.ReqFundsResp;
+import com.health.contracts.service.impl.ContractImpl;
 
 import lombok.extern.slf4j.Slf4j;
 

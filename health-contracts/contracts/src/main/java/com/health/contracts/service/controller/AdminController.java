@@ -1,4 +1,4 @@
-package com.health.contracts.service;
+package com.health.contracts.service.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.health.contracts.model.LogVisitationReq;
+import com.health.contracts.service.impl.AdminImpl;
 
 @RestController
 public class AdminController {

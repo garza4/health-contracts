@@ -1,4 +1,4 @@
-package com.health.contracts.service;
+package com.health.contracts.service.impl;
 
 import com.health.contracts.entity.HealthUser;
 import org.springframework.beans.factory.annotation.Autowired;
