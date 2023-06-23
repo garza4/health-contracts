@@ -11,8 +11,12 @@ import com.health.contracts.entity.HealthUser;
 import com.health.contracts.model.SaveUserReq;
 @RestController
 public class UserController {
-	@Autowired
-	UserImpl userImpl;
+	private UserImpl userImpl;
+        
+        @Autowired
+        public UserController(UserImpl userImpl){
+            this.userImpl = userImpl;
+        }
 	
 	@GetMapping("/users/get/{uid}")
 	public HealthUser getUser(@PathVariable String uid) {

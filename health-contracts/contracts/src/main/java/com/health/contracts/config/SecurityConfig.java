@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfiguration{
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests((auth)-> 
-                auth.requestMatchers("/api/v1/auth/**").permitAll()
+                auth.requestMatchers("/auth/**").permitAll()
                 .anyRequest()
                 .authenticated()
         )   .sessionManagement((session)->session

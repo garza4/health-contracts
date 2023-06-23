@@ -62,7 +62,7 @@ public class HealthUserDetails implements UserDetails{
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> auth = new ArrayList();
-        auth.add(new SimpleGrantedAuthority(user.getRole()));
+        auth.add(new SimpleGrantedAuthority(this.user.getRole()));
         return auth;
      }
 

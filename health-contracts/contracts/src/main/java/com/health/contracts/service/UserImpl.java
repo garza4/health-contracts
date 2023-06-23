@@ -13,15 +13,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
 public class UserImpl implements Users{
 	private UserRepository userRepo;
 //	private IAuthenticationFacade userContext;
         private PasswordEncoder passwordEncoder;
+        @Autowired
+        public UserImpl(UserRepository userRepo,PasswordEncoder passwordEncoder){
+            this.userRepo=userRepo;
+            this.passwordEncoder=passwordEncoder;
+        }
 
 	@Override
 	public HealthUser getUsers(String uid) {
-//            log.info("user is: " +  userContext.getUserContext().getUid());
+            log.info("user is: " +  uid);
             HealthUser user = null;
             try{
                 user = userRepo.getUserByUName(uid);
