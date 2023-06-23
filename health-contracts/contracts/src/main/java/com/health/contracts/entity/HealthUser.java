@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.math.BigInteger;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +24,7 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HealthUser {
+public class HealthUser{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long upkid;
@@ -44,5 +43,8 @@ public class HealthUser {
     
     @Column(name="last_name")
     String lastName;
+    
+    @Column(name="password")
+    String password;
 
 }
