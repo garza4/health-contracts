@@ -5,12 +5,7 @@
 package com.health.contracts.config;
 
 import com.health.contracts.entity.HealthUser;
-import com.health.contracts.model.HealthUserDetails;
 import com.health.contracts.repository.UserRepository;
-import com.health.contracts.service.UserController;
-import com.health.contracts.service.UserImpl;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.FilterChain;
@@ -22,18 +17,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -93,6 +83,11 @@ public class JwtTokenFilter extends OncePerRequestFilter{
                 return;
             }else{
                 HealthUser hUser = userRepo.getUserByUName(uid);  
+                if(hUser == null){
+                    log.error("this user does not exist");
+                    response.sendError(401);
+                    return;
+                }
                 List<GrantedAuthority> grantedAuth = new ArrayList();
                 grantedAuth.add(getGrantedAuthority(hUser.getRole()));
                 final UsernamePasswordAuthenticationToken authentication = 
