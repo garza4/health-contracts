@@ -36,9 +36,14 @@ public class AccountMangager {
             var initialDecisions = optimizePayments(receipts,accountBalance);
             //best payments from cant pay list
             var secondaryDecisions = optimizePayments(initialDecisions.getCantPay(),accountBalance);
-            finalDecision.getCanPay().addAll(secondaryDecisions.getCanPay());
-            finalDecision.getCanPay().addAll(initialDecisions.getCanPay());
-            finalDecision = optimizePayments(finalDecision.getCanPay(),accountBalance);
+            if(initialDecisions.getCanPay().size()>secondaryDecisions.getCanPay().size()){
+                finalDecision.setCanPay(initialDecisions.getCanPay());
+                finalDecision.getCantPay().addAll(initialDecisions.getCantPay());
+            }   
+            else if(initialDecisions.getCanPay().size()<=secondaryDecisions.getCanPay().size()){
+                finalDecision.setCanPay(secondaryDecisions.getCanPay());
+                finalDecision.getCantPay().addAll(secondaryDecisions.getCantPay());
+            }
             
             finalDecision.getCanPay().forEach(entity->entity.setStatus("R"));
             receiptRepository.saveAll(finalDecision.getCanPay());
@@ -66,32 +71,32 @@ public class AccountMangager {
             }else{
                 int sum = 0;
                 
-                int endOfReceipts = copyOfReceipts.size()-1;
+                int receiptIndex = 0;
                 while(sum <= Integer.parseInt(accountBalance)){
                     if(copyOfReceipts.size() == 0) break;
                     if(copyOfReceipts.size()== 1){
-                        sum += Integer.valueOf(copyOfReceipts.get(endOfReceipts).getTransferAmount());
+                        sum += Integer.valueOf(copyOfReceipts.get(receiptIndex).getTransferAmount());
                         if(!sumGreaterThanBalance(sum,accountBalance)){
-                            toPay.add(copyOfReceipts.get(endOfReceipts));
+                            toPay.add(copyOfReceipts.get(receiptIndex));
                         }else{
-                            sum -= Integer.valueOf(copyOfReceipts.get(endOfReceipts).getTransferAmount());
-                            cantPay.add(copyOfReceipts.get(endOfReceipts));
+                            sum -= Integer.valueOf(copyOfReceipts.get(receiptIndex).getTransferAmount());
+                            cantPay.add(copyOfReceipts.get(receiptIndex));
                             //will be empty list here
-                            copyOfReceipts.remove(endOfReceipts);
+                            copyOfReceipts.remove(receiptIndex);
                         }
                         break;
                     }
-                    sum += Integer.valueOf(copyOfReceipts.get(endOfReceipts).getTransferAmount());
-                    toPay.add(copyOfReceipts.get(endOfReceipts));
+                    sum += Integer.valueOf(copyOfReceipts.get(receiptIndex).getTransferAmount());
+                    toPay.add(copyOfReceipts.get(receiptIndex));
                     if(sumGreaterThanBalance(sum,accountBalance)){
-                        sum -= Integer.valueOf(copyOfReceipts.get(endOfReceipts).getTransferAmount());
+                        sum -= Integer.valueOf(copyOfReceipts.get(receiptIndex).getTransferAmount());
                         toPay.remove(toPay.size()-1);
-                        cantPay.add(copyOfReceipts.get(endOfReceipts));
+                        cantPay.add(copyOfReceipts.get(receiptIndex));
                     }
                     //remove assesed receipt from copy list
-                    copyOfReceipts.remove(endOfReceipts);
-                    endOfReceipts = copyOfReceipts.size()-1;
-                    endOfReceipts--;
+                    copyOfReceipts.remove(receiptIndex);
+                    receiptIndex = copyOfReceipts.size()-1;
+                    receiptIndex++;
                 }
             }
             //after assesement add all to respective lists
