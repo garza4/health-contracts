@@ -46,4 +46,7 @@ public class FundReceiptEntity {
     @Column(name="obo_patient")
     String oboPatient;
     
+    @Column(name="status")
+    String status;
+    
 }
