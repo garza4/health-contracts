@@ -39,10 +39,14 @@ public class AccountMangager {
             if(initialDecisions.getCanPay().size()>secondaryDecisions.getCanPay().size()){
                 finalDecision.setCanPay(initialDecisions.getCanPay());
                 finalDecision.getCantPay().addAll(initialDecisions.getCantPay());
+                finalDecision.getCantPay().addAll(secondaryDecisions.getCanPay());
+                finalDecision.getCantPay().addAll(secondaryDecisions.getCantPay());
             }   
             else if(initialDecisions.getCanPay().size()<=secondaryDecisions.getCanPay().size()){
                 finalDecision.setCanPay(secondaryDecisions.getCanPay());
                 finalDecision.getCantPay().addAll(secondaryDecisions.getCantPay());
+                finalDecision.getCantPay().addAll(initialDecisions.getCantPay());
+                finalDecision.getCantPay().addAll(initialDecisions.getCantPay());
             }
             
             finalDecision.getCanPay().forEach(entity->entity.setStatus("R"));
