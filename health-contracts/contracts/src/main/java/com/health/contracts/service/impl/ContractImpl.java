@@ -59,7 +59,7 @@ public class ContractImpl implements ContractApi {
 			transfer.setAmount(req.getAmount());
 			transfer.setDestination(req.getId());
 			transfer.setFrom(req.getPublicMasterAccount());
-                        receiptRepo.save(new FundReceiptEntity(null,new Timestamp(System.currentTimeMillis()),req.getAmount(),req.getAdminUser(),req.getPatient()));
+                        receiptRepo.save(new FundReceiptEntity(null,new Timestamp(System.currentTimeMillis()),req.getAmount(),req.getAdminUser(),req.getPatient(),"P"));
                         
 		} catch (IOException io) {
 			log.error("stellar returned io error", io);
