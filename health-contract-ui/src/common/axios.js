@@ -1,11 +1,23 @@
 import axios from 'axios';
 const api = axios.create({baseURL:'http://localhost:8080/api/v1'});
+jwtToken ="";
 api.interceptors.request.use(
     (config) => {
-      const token = localStorage.getItem('token'); // Assuming you store the token in localStorage
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+        if(!axios.getUri.contains("login")){
+            config.headers.Authorization = jwtToken;
+        }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  api.interceptors.response.use(
+    (request) => {
+        if(axios.getUri.contains("login")){
+            jwtToken=request.headers.getAuthorization();
+        }
       return config;
     },
     (error) => {
