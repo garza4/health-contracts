@@ -1,31 +1,46 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-const useAxios = (url,method,payload) => {
-    const [data, setData] = useState(null);
-    const [error, setError] = useState("");
-    const [loaded, setLoaded] = useState(false);
+export const UseAxios = (url,method,payload) => {
+    const [loading, setLoading] = useState(false);
+    const [error,setError] = useState(null);
     const controllerRef = useRef(new AbortController());
+    const urlTokens = useRef([]);
     const cancel = () => {
         controllerRef.current.abort();
     };
-    useEffect(() => {
-        (async () => {
-          try {
+
+
+    const send = useCallback(async (url,method,errorMessage=null,body=null,payload,responseType='json',params=null) =>{
+        setLoading(true);
+        const cancelToken = axios.CancelToken.source();
+        const currentReq = urlTokens.current.findIndex(item => item.url === url);
+        if(currentReq !== -1){
+            if(cancel){
+                urlTokens.current[currentReq].token.cancel();
+            }
+            urlTokens.current.splice(currentReq,1);
+        }
+        urlTokens.current.push({url,token:cancelToken});
+        try{
             const response = await axios.request({
-              data: payload,
-              signal: controllerRef.current.signal,
-              method,
-              url,
+                method,
+                url,
+                responseType:'json',
+                cancelToken: cancelToken.token,
+                ...(body && {data:body}),
+                ...(params && {params:params})
             });
-    
-            setData(response.data);
-          } catch (error) {
-            setError(error.message);
-          } finally {
-            setLoaded(true);
-          }
-        })();
-      }, []);
-}
-export default UseAxios;
+            return response;
+
+        }catch (e){
+            setError(e);
+        }
+    },[]);
+
+    useEffect(() => {
+        urlTokens.current.forEach(item => item.token.cancel());
+        urlTokens.current.length = 0;
+    }, []);
+    return {loading,send,error}
+};
