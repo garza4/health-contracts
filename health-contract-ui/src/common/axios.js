@@ -1,8 +1,9 @@
 import axios from 'axios';
-const api = axios.create({baseURL:'http://localhost:8080/api/v1'});
+const api = axios.create({baseURL:'/'});
 jwtToken ="";
 api.interceptors.request.use(
     (config) => {
+        console.log
         if(!axios.getUri.contains("login")){
             config.headers.Authorization = jwtToken;
         }
