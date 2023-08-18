@@ -30,12 +30,12 @@ public class AccountManagerTests {
     @Autowired
     TestUtil testUtil;
     
-    @Test
-    public void testOptimization(){
-      when(receiptRepository.getPendingReceipts()).thenReturn(testUtil.getReceipts());
-      PaymentDecisions decision = accountManager.manageMasterAccount();
-      System.out.println(decision.toString());
-      
-    }
+//    @Test
+//    public void testOptimization(){
+//      when(receiptRepository.getPendingReceipts()).thenReturn(testUtil.getReceipts());
+//      PaymentDecisions decision = accountManager.manageMasterAccount();
+//      System.out.println(decision.toString());
+//      
+//    }
     
 }

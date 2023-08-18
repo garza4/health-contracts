@@ -11,7 +11,17 @@ const Login = () => {
     const [loginState,setLoginState] = useState(defaultLoginState);
     const {send,loading} = UseAxios();
 
+    const handleInput = (e,email) => {
+        console.log(e.target.value);
+        if(email ==='email'){
+            setLoginState({...loginState,email:e.target.value})
+        }else{
+            setLoginState({...loginState,password:e.target.value})
+        }
+    }
+
     const applicationLogin = () => {
+        console.log(loginState);
         const authPayload = {
             uid:loginState.email,
             password:loginState.password
@@ -26,12 +36,16 @@ const Login = () => {
 
     return(
         <div>
-           <Form onSubmit={() => applicationLogin()}>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+           <Form onSubmit={()=>applicationLogin}>
+                <Form.Group className="mb-3" 
+                    onChange={(e)=> handleInput(e,'email')}
+                    controlId="exampleForm.ControlInput1">
                     <Form.Label>Email address</Form.Label>
                     <Form.Control type="email" placeholder="name@example.com" />
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Group className="mb-3" 
+                onChange={(e)=> handleInput(e,'password')}
+                controlId="exampleForm.ControlInput1">
                     <Form.Label>Password</Form.Label>
                     <Form.Control type="password" placeholder="password" />
                 </Form.Group>

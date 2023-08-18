@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +19,18 @@ import org.springframework.stereotype.Component;
  * This class will help manage the funds in the master account.
  * @author Bobby
  */
-@RequiredArgsConstructor
 @Slf4j
 @Component
 public class AccountMangager {
     private final AccountImpl accountImpl;
     private final ReceiptRepository receiptRepository;
-    @Value("${stellar.master.acct}") private final String account;
+//    @Value("${stellar.master.acct}") 
+    private final String account = "https://horizon-testnet.stellar.org";
+    @Autowired
+    public AccountMangager(AccountImpl accountImpl,ReceiptRepository receiptRepository){
+        this.accountImpl = accountImpl;
+        this.receiptRepository = receiptRepository;
+    }
     public PaymentDecisions manageMasterAccount(){
         var finalDecision = new PaymentDecisions(new ArrayList<>(),new ArrayList<>());
         try{
