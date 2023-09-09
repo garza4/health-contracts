@@ -12,6 +12,7 @@ export const UseAxios = (url,method,payload) => {
 
 
     const send = useCallback(async (url,method,errorMessage=null,body=null,payload,responseType='json',params=null) =>{
+        console.log("making call");
         setLoading(true);
         const cancelToken = axios.CancelToken.source();
         const currentReq = urlTokens.current.findIndex(item => item.url === url);

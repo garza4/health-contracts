@@ -20,13 +20,13 @@ const Login = () => {
         }
     }
 
-    const applicationLogin = () => {
-        console.log(loginState);
+    const applicationLogin = async () => {
+        console.log("loggin in to application");
         const authPayload = {
             uid:loginState.email,
             password:loginState.password
         }
-        const data = send(constants.URI.login,"Post",authPayload);
+        const data = await send('http://localhost:8080/authenticate',"Post",authPayload);
         const returnedData = JSON.stringify(data || {});
         if(data){
             setLoginState({...loginState,response:returnedData});
@@ -36,7 +36,7 @@ const Login = () => {
 
     return(
         <div>
-           <Form onSubmit={()=>applicationLogin}>
+           <Form onSubmit={applicationLogin}>
                 <Form.Group className="mb-3" 
                     onChange={(e)=> handleInput(e,'email')}
                     controlId="exampleForm.ControlInput1">

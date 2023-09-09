@@ -39,11 +39,11 @@ public class SecurityConfig extends WebSecurityConfiguration{
             .authorizeHttpRequests((auth)-> 
                 auth.requestMatchers("/auth/**").permitAll()
                 .anyRequest()
-                .authenticated()
-        )   .sessionManagement((session)->session
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        ).authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .authenticated())   
+            .sessionManagement((session)->session
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
     

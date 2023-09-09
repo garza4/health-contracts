@@ -1,3 +1,3 @@
 export const URI = {
-    login:"/authenticate"
+    login:'/authenticate'
 }
