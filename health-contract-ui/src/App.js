@@ -1,17 +1,27 @@
-import logo from './logo.svg';
+import React from "react";
 import './App.css';
-import login from './pages/login';
 import Login from './pages/login';
-import Router from './common/router';
+import ReactDOM from "react-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <Router/>
-      </header>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/login' element={<Login/>}/>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
 
+ReactDOM.render(
+  <App />,
+  document.getElementById("root")
+);
 export default App;

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import {UseAxios} from '../hooks/useAxios';
 import * as constants from '../common/constants';
 import { Form,Button } from 'react-bootstrap';
+import { useNavigate } from "react-router-dom";
+import React from "react";
 const defaultLoginState = {
     email:"",
     password:"",
@@ -10,9 +12,9 @@ const defaultLoginState = {
 const Login = () => {
     const [loginState,setLoginState] = useState(defaultLoginState);
     const {send,loading} = UseAxios();
+    const nav = useNavigate();
 
     const handleInput = (e,email) => {
-        console.log(e.target.value);
         if(email ==='email'){
             setLoginState({...loginState,email:e.target.value})
         }else{
@@ -31,6 +33,7 @@ const Login = () => {
         if(data){
             setLoginState({...loginState,response:returnedData});
         }
+        nav(constants.URI.landingPage);
         
     }
 
