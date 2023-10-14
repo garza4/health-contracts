@@ -7,12 +7,15 @@ package com.health.contracts.service.controller;
 import com.health.contracts.config.JwtUtil;
 import com.health.contracts.dto.AuthenticationRequest;
 import com.health.contracts.model.HealthUserDetails;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,13 +47,14 @@ public class AuthController {
             log.info("got user: " + user.toString());
             if(user != null && PasswordEncoder.matches(req.getPassword(), user.getPassword())){
                 log.info("user is not null");
-                return ResponseEntity.ok(jwtUtils.generateToken(user));
+                HttpCookie cookie = ResponseCookie.from("health-contracts",jwtUtils.generateToken(user)).path("/authenticate").build();
+                return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body("login success");
             }
         }catch(Exception e){
             log.error("exception authenticating user",e);
         }
         
-        return ResponseEntity.status(400).body("Something happened");
+        return ResponseEntity.status(400).body("user not authorized");
     }
     
 }

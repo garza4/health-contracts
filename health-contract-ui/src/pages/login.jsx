@@ -3,6 +3,7 @@ import {UseAxios} from '../hooks/useAxios';
 import * as constants from '../common/constants';
 import { Form,Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import React from "react";
 const defaultLoginState = {
     email:"",
@@ -13,6 +14,7 @@ const Login = () => {
     const [loginState,setLoginState] = useState(defaultLoginState);
     const {send,loading} = UseAxios();
     const nav = useNavigate();
+    const sending = axios.create();
 
     const handleInput = (e,email) => {
         if(email ==='email'){
@@ -28,13 +30,19 @@ const Login = () => {
             uid:loginState.email,
             password:loginState.password
         }
-        const data = await send('http://localhost:8080/authenticate',"Post",authPayload);
-        const returnedData = JSON.stringify(data || {});
-        if(data){
-            setLoginState({...loginState,response:returnedData});
+        const options = {
+            method: "post",
+            url: "/auth/authenticate",
+            data: authPayload,
+            timeout:6000
+          };
+        try{
+            const resp = await sending(options);
+            console.log(resp);
+            // nav(constants.URI.landingPage);
+        }catch(e){
+
         }
-        nav(constants.URI.landingPage);
-        
     }
 
     return(
@@ -43,8 +51,8 @@ const Login = () => {
                 <Form.Group className="mb-3" 
                     onChange={(e)=> handleInput(e,'email')}
                     controlId="exampleForm.ControlInput1">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="name@example.com" />
+                    <Form.Label>User ID</Form.Label>
+                    <Form.Control />
                 </Form.Group>
                 <Form.Group className="mb-3" 
                 onChange={(e)=> handleInput(e,'password')}
