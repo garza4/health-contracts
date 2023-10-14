@@ -3,7 +3,7 @@ const api = axios.create({baseURL:'/'});
 jwtToken ="";
 api.interceptors.request.use(
     (config) => {
-        if(!axios.getUri.contains("login")){
+        if(!axios.getUri.contains("/auth")){
             config.headers.Authorization = jwtToken;
         }
       return config;
@@ -14,9 +14,9 @@ api.interceptors.request.use(
   );
 
   api.interceptors.response.use(
-    (request) => {
-        if(axios.getUri.contains("login")){
-            jwtToken=request.headers.getAuthorization();
+    (response) => {
+        if(axios.getUri.contains("/auth")){
+          jwtToken=request.headers.getAuthorization();
         }
       return config;
     },

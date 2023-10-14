@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import './App.css';
 import Login from './pages/login';
 import ReactDOM from "react-dom";
@@ -13,7 +13,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path='/login' element={<Login/>}/>
+          <Route exact path='/' element={<Login/>}/>
         </Routes>
       </BrowserRouter>
     </div>
