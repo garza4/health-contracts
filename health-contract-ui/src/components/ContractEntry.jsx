@@ -1,7 +1,7 @@
 import Accordion from "react-bootstrap/Accordion";
 import Table from 'react-bootstrap/Table';
 
-const ContactEntry = ({entryType,data,...props}) => {
+const ContractEntry = ({entryType,data,...props}) => {
 
     const constructEntry = (entry) => {
         if(entryType === 'request'){
@@ -43,9 +43,13 @@ const ContactEntry = ({entryType,data,...props}) => {
     }
 
     return(
-        data.map((entry) =>{
-            constructEntry(entry)
-        })
+        // data ?
+        //     data.map((entry =>{
+        //         constructEntry(entry)
+        //     })):
+        <>no data</>
     );
 
 }
+
+export default ContractEntry;

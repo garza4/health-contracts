@@ -5,6 +5,7 @@ import { Form,Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import React from "react";
+import ContractViewCard from '../components/ContractViewCard';
 const defaultLoginState = {
     email:"",
     password:"",
@@ -64,6 +65,9 @@ const Login = () => {
                     Submit
                 </Button>
             </Form> 
+
+            {/* uncomment to test view card:  
+            <ContractViewCard cardTitle={"first card"} bodyText={"some text"} entryType={"type1"}/> */}
         </div> 
     )
 }
