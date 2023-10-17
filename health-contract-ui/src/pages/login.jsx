@@ -3,7 +3,6 @@ import {UseAxios} from '../hooks/useAxios';
 import * as constants from '../common/constants';
 import { Form,Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import React from "react";
 import ContractViewCard from '../components/ContractViewCard';
 const defaultLoginState = {
@@ -14,8 +13,7 @@ const defaultLoginState = {
 const Login = () => {
     const [loginState,setLoginState] = useState(defaultLoginState);
     const {send,loading} = UseAxios();
-    const nav = useNavigate();
-    const sending = axios.create();
+    const history = useNavigate();
 
     const handleInput = (e,email) => {
         if(email ==='email'){
@@ -26,7 +24,6 @@ const Login = () => {
     }
 
     const applicationLogin = async () => {
-        console.log("loggin in to application");
         const authPayload = {
             uid:loginState.email,
             password:loginState.password
@@ -34,21 +31,35 @@ const Login = () => {
         const options = {
             method: "post",
             url: "/auth/authenticate",
-            data: authPayload,
-            timeout:6000
+            data: JSON.stringify(authPayload),
+            timeout:600000,
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'Connection':'keep-alive'
+            }
           };
         try{
-            const resp = await sending(options);
-            console.log(resp);
-            // nav(constants.URI.landingPage);
+            await send(options.url,options.method,null,options.data).then(response => {
+                if(response && response.status == 200){
+                    console.log(response);
+                    history(constants.URI.landingPage);
+                }
+            }).catch(error => {
+                if (error.name === 'AbortError') {
+                  console.log('Request was canceled');
+                } else {
+                  console.log(error);
+                }
+              });
         }catch(e){
-
+            console.log(e);
         }
     }
 
     return(
         <div>
-           <Form onSubmit={applicationLogin}>
+           <Form onSubmit={() => applicationLogin()}>
                 <Form.Group className="mb-3" 
                     onChange={(e)=> handleInput(e,'email')}
                     controlId="exampleForm.ControlInput1">

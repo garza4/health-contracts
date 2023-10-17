@@ -52,12 +52,13 @@ public class JwtTokenFilter extends OncePerRequestFilter{
             HttpServletResponse response, 
             FilterChain filterChain) throws ServletException, IOException {
         log.debug("" + request.getHeaderNames());
+        if(request.getRequestURI().contains("/auth")){
+            log.debug("user is authorized");
+            filterChain.doFilter(request,response);
+            return;
+        }
         try{
             log.debug("jwtAuth");
-            if(request.getRequestURI().contains("/auth")){
-                log.debug("user is authorized");
-                filterChain.doFilter(request,response);
-            }
             String jwtHeader = null;
             //if jwtToken is still valid continue with session
             Cookie[] cookies = request.getCookies();//request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -78,12 +79,13 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 
                             if(uid.isBlank() || uid ==null){
                                 log.error("uid from token invalid");
+                                response.sendError(401,"uid from token invalid");
                                 return;
                             }else{
                                 HealthUser hUser = userRepo.getUserByUName(uid);  
                                 if(hUser == null){
                                     log.error("this user does not exist");
-                                    response.sendError(401);
+                                    response.sendError(401,"could not find user");
                                     return;
                                 }
                                 List<GrantedAuthority> grantedAuth = new ArrayList();
@@ -93,6 +95,10 @@ public class JwtTokenFilter extends OncePerRequestFilter{
                                 SecurityContextHolder.getContext().setAuthentication(authentication);
                             }
                             filterChain.doFilter(request,response);
+                            return;
+                        }else{
+                            response.sendError(401,"token invalid");
+                            return;
                         }
                     }
                 }
@@ -103,7 +109,8 @@ public class JwtTokenFilter extends OncePerRequestFilter{
             response.sendError(401);
             return;
         }
-        filterChain.doFilter(request,response);
+        response.sendError(401,"unauthorized");
+        return;
     }
     
     private String getUserName(String token){

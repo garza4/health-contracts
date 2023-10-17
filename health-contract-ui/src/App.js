@@ -1,27 +1,29 @@
 import React, { useEffect } from "react";
 import './App.css';
 import Login from './pages/login';
-import ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
 import {
-  BrowserRouter,
-  Routes,
-  Route
-} from "react-router-dom";
+  createBrowserRouter,
+  RouterProvider,
+}  from "react-router-dom";
+import Home from "./pages/home";
 
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route exact path='/' element={<Login/>}/>
-        </Routes>
-      </BrowserRouter>
-    </div>
+function App(){
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Login/>,
+    },
+    {
+      path:"/home",
+      element:<Home/>
+    }
+  ]);
+  
+  
+  ReactDOM.createRoot(document.getElementById("root")).render(
+    <RouterProvider router={router} />
   );
 }
 
-ReactDOM.render(
-  <App />,
-  document.getElementById("root")
-);
 export default App;

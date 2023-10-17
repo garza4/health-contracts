@@ -4,6 +4,7 @@
  */
 package com.health.contracts.dto;
 
+import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +18,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class AuthenticationRequest {
+public class AuthenticationRequest implements Serializable{
     private String uid;
     private String password;
     
