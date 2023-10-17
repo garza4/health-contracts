@@ -47,7 +47,7 @@ public class AuthController {
             log.info("got user: " + user.toString());
             if(user != null && PasswordEncoder.matches(req.getPassword(), user.getPassword())){
                 log.info("user is not null");
-                HttpCookie cookie = ResponseCookie.from("health-contracts",jwtUtils.generateToken(user)).path("/authenticate").build();
+                HttpCookie cookie = ResponseCookie.from("Bearer",jwtUtils.generateToken(user)).path("/").httpOnly(true).maxAge(600).build();
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body("login success");
             }
         }catch(Exception e){

@@ -38,10 +38,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtTokenFilter extends OncePerRequestFilter{
 
     private final UserRepository userRepo;
+    private JwtUtil jwtUtil;
     
     @Autowired
-    public JwtTokenFilter(UserRepository userRepo){
+    public JwtTokenFilter(UserRepository userRepo,JwtUtil jwtUtil){
         this.userRepo = userRepo;
+        this.jwtUtil = jwtUtil;
     }
     
     @Override
@@ -51,60 +53,49 @@ public class JwtTokenFilter extends OncePerRequestFilter{
             FilterChain filterChain) throws ServletException, IOException {
         log.debug("" + request.getHeaderNames());
         try{
-            String header = null;//request.getHeader(HttpHeaders.AUTHORIZATION);
-            Cookie[] reqCookies = request.getCookies();
-            for(Cookie cook : reqCookies){
-                cook.getName();
-                if(cook.getName().equals(HttpHeaders.SET_COOKIE)){
-                    header = cook.getValue();
-                    if(header != null && JwtUtil.validateToken(header)){
-                        filterChain.doFilter(request,response);
+            log.debug("jwtAuth");
+            if(request.getRequestURI().contains("/auth")){
+                log.debug("user is authorized");
+                filterChain.doFilter(request,response);
+            }
+            String jwtHeader = null;
+            //if jwtToken is still valid continue with session
+            Cookie[] cookies = request.getCookies();//request.getHeader(HttpHeaders.AUTHORIZATION);
+            if(cookies != null && cookies.length != 0){
+                for(Cookie singleCookie : cookies){
+                    log.debug("cookie : {}",singleCookie.getName());
+                    if(singleCookie.getName().equals("Bearer")){
+                        jwtHeader = singleCookie.getValue();
+                        log.debug("JWT header is: {}",jwtHeader);
+//                        String jwtToken = jwtHeader.split(";")[1].trim();
+                        if(jwtUtil.validateToken(jwtHeader)){
+                         
+                            log.debug("jwt token: {}",jwtHeader);
+                            String uid = getUserName(jwtHeader);
+                            Jwts.builder().setClaims(new HashMap<String,Object>()).setSubject(uid).setIssuedAt(new Date(System.currentTimeMillis()))
+                                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                                .signWith(SignatureAlgorithm.HS256, "secret").compact();
+
+                            if(uid.isBlank() || uid ==null){
+                                log.error("uid from token invalid");
+                                return;
+                            }else{
+                                HealthUser hUser = userRepo.getUserByUName(uid);  
+                                if(hUser == null){
+                                    log.error("this user does not exist");
+                                    response.sendError(401);
+                                    return;
+                                }
+                                List<GrantedAuthority> grantedAuth = new ArrayList();
+                                grantedAuth.add(getGrantedAuthority(hUser.getRole()));
+                                final UsernamePasswordAuthenticationToken authentication = 
+                                        new UsernamePasswordAuthenticationToken(hUser,hUser,grantedAuth);
+                                SecurityContextHolder.getContext().setAuthentication(authentication);
+                            }
+                            filterChain.doFilter(request,response);
+                        }
                     }
                 }
-            }
-            if(request.getRequestURI().contains("/auth")){
-                filterChain.doFilter(request,response);
-                return;
-            }
-            if(header == null){
-                log.debug("header is null, jwt token not set");
-                response.sendError(401);
-                return;
-            }
-            String token = header.trim();
-            log.debug("token" + token);
-            final String uid;
-            String jws;
-
-            if(token.isEmpty() || !token.startsWith("Bearer")){
-                response.sendError(401);
-                return;
-            }
-            String jwtToken = token.split(" ")[1].trim();
-            uid = getUserName(jwtToken);
-            jws = Jwts.builder().setClaims(new HashMap<String,Object>()).setSubject(uid).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256, "secret").compact();
-            
-            
-            log.debug("uid is: " + uid);
-
-
-            if(uid.isBlank() || uid ==null){
-                log.error("uid from token invalid");
-                return;
-            }else{
-                HealthUser hUser = userRepo.getUserByUName(uid);  
-                if(hUser == null){
-                    log.error("this user does not exist");
-                    response.sendError(401);
-                    return;
-                }
-                List<GrantedAuthority> grantedAuth = new ArrayList();
-                grantedAuth.add(getGrantedAuthority(hUser.getRole()));
-                final UsernamePasswordAuthenticationToken authentication = 
-                        new UsernamePasswordAuthenticationToken(hUser,hUser,grantedAuth);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             
         }catch(Exception e){
