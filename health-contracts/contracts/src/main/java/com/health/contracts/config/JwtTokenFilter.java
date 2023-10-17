@@ -5,11 +5,13 @@
 package com.health.contracts.config;
 
 import com.health.contracts.entity.HealthUser;
+import com.health.contracts.config.JwtUtil;
 import com.health.contracts.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -49,13 +51,23 @@ public class JwtTokenFilter extends OncePerRequestFilter{
             FilterChain filterChain) throws ServletException, IOException {
         log.debug("" + request.getHeaderNames());
         try{
-            final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+            String header = null;//request.getHeader(HttpHeaders.AUTHORIZATION);
+            Cookie[] reqCookies = request.getCookies();
+            for(Cookie cook : reqCookies){
+                cook.getName();
+                if(cook.getName().equals(HttpHeaders.SET_COOKIE)){
+                    header = cook.getValue();
+                    if(header != null && JwtUtil.validateToken(header)){
+                        filterChain.doFilter(request,response);
+                    }
+                }
+            }
             if(request.getRequestURI().contains("/auth")){
                 filterChain.doFilter(request,response);
                 return;
             }
             if(header == null){
-                log.debug("header is null");
+                log.debug("header is null, jwt token not set");
                 response.sendError(401);
                 return;
             }
