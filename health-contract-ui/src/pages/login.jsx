@@ -5,6 +5,8 @@ import { Form,Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import ContractViewCard from '../components/ContractViewCard';
+import axios from 'axios';
+import api from '../common/axios';
 const defaultLoginState = {
     email:"",
     password:"",
@@ -31,7 +33,7 @@ const Login = () => {
         const options = {
             method: "post",
             url: "/auth/authenticate",
-            data: JSON.stringify(authPayload),
+            data: authPayload,
             timeout:600000,
             headers: {
                 'Content-Type': 'application/json',
@@ -39,27 +41,21 @@ const Login = () => {
                 'Connection':'keep-alive'
             }
           };
-        try{
-            await send(options.url,options.method,null,options.data).then(response => {
-                if(response && response.status == 200){
-                    console.log(response);
-                    history(constants.URI.landingPage);
-                }
-            }).catch(error => {
-                if (error.name === 'AbortError') {
-                  console.log('Request was canceled');
-                } else {
-                  console.log(error);
-                }
-              });
-        }catch(e){
-            console.log(e);
-        }
+        
+          await api.post(options.url,
+            options.data).then( (response) =>{
+            if(response && response.status === 200){
+                console.log(response);
+                history(constants.URI.landingPage);
+            }
+        }).catch((error) =>{
+            console.log(error);
+        });
     }
 
     return(
         <div>
-           <Form onSubmit={() => applicationLogin()}>
+           <Form onSubmit={applicationLogin}>
                 <Form.Group className="mb-3" 
                     onChange={(e)=> handleInput(e,'email')}
                     controlId="exampleForm.ControlInput1">

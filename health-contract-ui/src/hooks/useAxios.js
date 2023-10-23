@@ -1,24 +1,8 @@
+
 import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export const UseAxios = () => {
-    axios.interceptors.request.use(
-        config => {
-          config.headers['Content_Type'] = 'application/json';
-          config.headers['Accept'] = '*/*';
-        },error => {
-              return Promise.reject(error);
-          }
-      );
-    
-    axios.interceptors.response.use((response) => {
-        response.headers['Content-Type'] = 'json'
-        return response;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-    );
     const [loading, setLoading] = useState(false);
     const [error,setError] = useState(null);
     const controllerRef = useRef(new AbortController());
@@ -28,7 +12,7 @@ export const UseAxios = () => {
     };
 
 
-    const send = useCallback(async (url,method='GET',errorMessage=null,body=null,payload,responseType='json',params=null) =>{
+    const send = useCallback(async (url,method='POST',errorMessage=null,body=null,payload,responseType='json',params=null) =>{
         setLoading(true);
         const cancelToken = axios.CancelToken.source();
         removeToken(url);
@@ -37,7 +21,7 @@ export const UseAxios = () => {
             const response = await axios.request({
                 method,
                 url,
-                responseType:'json',
+                responseType:'application/json',
                 cancelToken: cancelToken.token,
                 ...(body && {data:body}),
                 ...(params && {params:params})

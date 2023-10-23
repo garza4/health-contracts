@@ -21,7 +21,7 @@ function App(){
   ]);
   
   
-  ReactDOM.createRoot(document.getElementById("root")).render(
+  const root = ReactDOM.createRoot(document.getElementById("root")).render(
     <RouterProvider router={router} />
   );
 }

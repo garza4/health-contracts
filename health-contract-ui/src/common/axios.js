@@ -1,8 +1,9 @@
 import axios from 'axios';
-const api = axios.create({baseURL:'/'});
+const api = axios.create();
+api.defaults.headers.common['Content-Type'] = 'application/json';
+api.defaults.baseURL = '/';
 api.interceptors.request.use((request) => {
-  request.headers['Content-Type'] = 'application/json';
-  request.headers['Accept'] = "*/*";
+  console.log(request);
   return request;
 },
   (error) => {
@@ -17,3 +18,4 @@ api.interceptors.response.use((response) => {
     return Promise.reject(error);
   }
 );
+export default api;
