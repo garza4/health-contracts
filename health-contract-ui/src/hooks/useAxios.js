@@ -1,6 +1,7 @@
 
 import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
+import api from "../common/axios";
 
 export const UseAxios = () => {
     const [loading, setLoading] = useState(false);
@@ -14,11 +15,11 @@ export const UseAxios = () => {
 
     const send = useCallback(async (url,method='POST',errorMessage=null,body=null,payload,responseType='json',params=null) =>{
         setLoading(true);
-        const cancelToken = axios.CancelToken.source();
+        const cancelToken = api.CancelToken.source();
         removeToken(url);
         urlTokens.current.push({url,token: cancelToken});
         try{
-            const response = await axios.request({
+            const response = await api.request({
                 method,
                 url,
                 responseType:'application/json',

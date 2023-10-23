@@ -5,7 +5,6 @@ import { Form,Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import ContractViewCard from '../components/ContractViewCard';
-import axios from 'axios';
 import api from '../common/axios';
 const defaultLoginState = {
     email:"",
@@ -42,8 +41,7 @@ const Login = () => {
             }
           };
         
-          await api.post(options.url,
-            options.data).then( (response) =>{
+          await api.post(options.url,options.data).then( (response) =>{
             if(response && response.status === 200){
                 console.log(response);
                 history(constants.URI.landingPage);
@@ -55,7 +53,7 @@ const Login = () => {
 
     return(
         <div>
-           <Form onSubmit={applicationLogin}>
+           <Form onSubmit={()=>applicationLogin()}>
                 <Form.Group className="mb-3" 
                     onChange={(e)=> handleInput(e,'email')}
                     controlId="exampleForm.ControlInput1">
