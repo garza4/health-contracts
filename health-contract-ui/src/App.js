@@ -1,29 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import './App.css';
-import Login from './pages/login';
 import * as ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-}  from "react-router-dom";
-import Home from "./pages/home";
+import {RouterProvider}  from "react-router-dom";
+import Router from "./common/router";
 
 function App(){
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Login/>,
-    },
-    {
-      path:"/home",
-      element:<Home/>
-    }
-  ]);
-  
-  
-  const root = ReactDOM.createRoot(document.getElementById("root")).render(
-    <RouterProvider router={router} />
-  );
+  const root = ReactDOM.createRoot(document.getElementById("root"))
+  .render(<RouterProvider router={Router} />);
 }
 
 export default App;
