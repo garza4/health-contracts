@@ -4,8 +4,9 @@ import {
   } from "react-router-dom";
 import Login from "../pages/login";
 import { createRoot } from "react-dom/client";
+import Home from "../pages/home";
 
-const router = createBrowserRouter([
+const Router = createBrowserRouter([
   {
     path: "/",
     element: <Login/>,
@@ -16,6 +17,6 @@ const router = createBrowserRouter([
   }
 ]);
 createRoot(document.getElementById("root")).render(
-    <RouterProvider router={router} />
+    <RouterProvider router={Router} />
 );
 export default Router;

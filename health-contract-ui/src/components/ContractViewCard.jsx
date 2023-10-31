@@ -28,7 +28,7 @@ const ContractViewCard = ({cardTitle, bodyText, entryType,data, ...props}) => {
                 </Card.Body>
             </Card>
             {openModal &&
-                <AddLogModal info={modalLogState} saveLog={setModalLogState} open={openModal} setOpen={setOpenModal}/>
+                <AddLogModal info={modalLogState} saveLog={setModalLogState} open={openModal} setOpen={setOpenModal} entryType={entryType}/>
             }
         </div>
     )

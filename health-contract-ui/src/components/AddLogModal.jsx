@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { Button, Form, Modal } from "react-bootstrap"
+import { PENDING } from "../common/constants";
 
-const AddLogModal = ({userInfo,setUserInfo,open,setOpen,...props}) =>{
+const AddLogModal = ({userInfo,setUserInfo,open,setOpen,entryType,...props}) =>{
     const [modalLogState,setModalLogState] = useState({...userInfo});
     return(
         <div
@@ -35,6 +36,8 @@ const AddLogModal = ({userInfo,setUserInfo,open,setOpen,...props}) =>{
             <Modal.Footer>
                 <Button variant="secondary" onClick={()=> setOpen(!open)}>Close</Button>
                 <Button variant="primary" onClick={() => setUserInfo({...modalLogState})}>Save changes</Button>
+                {entryType===PENDING? <Button variant="success">Apply</Button>:null}
+                
             </Modal.Footer>
             </Modal.Dialog>
         </div>

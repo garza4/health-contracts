@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {UseAxios} from '../hooks/useAxios';
 import * as constants from '../common/constants';
-import { Form,Button } from 'react-bootstrap';
+import { Form,Button, Col, Row } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import ContractViewCard from '../components/ContractViewCard';
@@ -46,34 +46,36 @@ const Login = () => {
                 console.log(response);
                 history(constants.URI.landingPage);
             }
-        }).catch((error) =>{
-            console.log(error);
-        });
+            }).catch((error) =>{
+                console.log(error);
+            });
     }
 
     return(
-        <div>
-           <Form onSubmit={()=>applicationLogin()}>
-                <Form.Group className="mb-3" 
-                    onChange={(e)=> handleInput(e,'email')}
+        <Row>
+            <Col>
+                <Form onSubmit={()=>applicationLogin()}>
+                    <Form.Group className="mb-3" 
+                        onChange={(e)=> handleInput(e,'email')}
+                        controlId="exampleForm.ControlInput1">
+                        <Form.Label>User ID</Form.Label>
+                        <Form.Control />
+                    </Form.Group>
+                    <Form.Group className="mb-3" 
+                    onChange={(e)=> handleInput(e,'password')}
                     controlId="exampleForm.ControlInput1">
-                    <Form.Label>User ID</Form.Label>
-                    <Form.Control />
-                </Form.Group>
-                <Form.Group className="mb-3" 
-                onChange={(e)=> handleInput(e,'password')}
-                controlId="exampleForm.ControlInput1">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="password" />
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    Submit
-                </Button>
-            </Form> 
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" placeholder="password" />
+                    </Form.Group>
+                    <Button variant="primary" type="submit">
+                        Submit
+                    </Button>
+                </Form> 
+            </Col>
 
             {/* uncomment to test view card:  
             <ContractViewCard cardTitle={"first card"} bodyText={"some text"} entryType={"type1"}/> */}
-        </div> 
+        </Row> 
     )
 }
 export default Login;
