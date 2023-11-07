@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AdminImpl implements Admin{
 	private AdminRepository adminRepo;
-        private UserImpl userImpl;
+        private Users userImpl;
 	
 	@Autowired
 	public AdminImpl(AdminRepository adminRepo,UserImpl userImpl) {
@@ -33,6 +33,7 @@ public class AdminImpl implements Admin{
                 user = userImpl.getUsers(req.getUid());
                 VisitationEntity visit = VisitationEntity.builder()
                     .visitRef(null)
+                    .status('w')
                     .comments(req.getComments())
                     .service(req.getService())
                     .requestedFunds(req.getReqForFundsUSD())
@@ -46,11 +47,12 @@ public class AdminImpl implements Admin{
         }
         
     @Override
-    public VisitationLog getVisits(String provider) {
+    public VisitationLog getPendingVisits(String uid) {
         List<VisitationEntity> logs = null;
         VisitationLog totalLog = new VisitationLog();
         try{
-            logs = adminRepo.getVisitations(provider);
+            HealthUser userInfo = userImpl.getUsers(uid);
+            logs = adminRepo.getVisitations(userInfo.getProvider());
             totalLog.setVisitations(logs);
         }catch(Exception e){
             log.error("error getting visitations",e);

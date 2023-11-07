@@ -10,6 +10,6 @@ import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface AdminRepository extends JpaRepository<VisitationEntity,String>{
-    @Query(value="SELECT * FROM h_user where provider=:provider",nativeQuery=true)
+    @Query(value="SELECT * FROM h_visitation_log where provider=:provider and status='w'",nativeQuery=true)
     List<VisitationEntity> getVisitations(@Param("provider") String provider);
 }

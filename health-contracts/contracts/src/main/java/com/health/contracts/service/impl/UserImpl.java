@@ -40,7 +40,7 @@ public class UserImpl implements Users{
 		try {
                     HealthUser hUser = HealthUser.builder()
                         .upkid(null)
-                        .provider(user.getCompany())
+                        .provider(user.getProvider())
                         .firstName(user.getFirstName())
                         .lastName(user.getLastName())
                         .role(user.getRole())

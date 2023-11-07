@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 public class VisitationEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,5 +39,11 @@ public class VisitationEntity {
         
         @Column(name="upkid")
         Long upkid;
+        
+        @Column(name="status")
+        Character status;
+        
+        @Column(name="provider")
+        String provider;
 
 }

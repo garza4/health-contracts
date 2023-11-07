@@ -8,14 +8,14 @@ import lombok.Getter;
 import lombok.Setter;
 @Getter
 @Setter
-@JsonPropertyOrder({"company","l_nm","f_nm","role","u_nm","password"})
+@JsonPropertyOrder({"provider","l_nm","f_nm","role","u_nm","password"})
 public class SaveUserReq implements Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@JsonProperty("company")
-	String company;
+	@JsonProperty("provider")
+	String provider;
 	@JsonProperty("l_nm")
 	String lastName;
 	@JsonProperty("f_nm")

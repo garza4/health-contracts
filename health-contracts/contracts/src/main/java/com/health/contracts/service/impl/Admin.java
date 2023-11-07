@@ -5,6 +5,6 @@ import com.health.contracts.model.VisitationLog;
 
 public interface Admin {
 	void logVisitation(LogVisitationReq req);
-        VisitationLog getVisits(String provider);
+        VisitationLog getPendingVisits(String provider);
       
 }

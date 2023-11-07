@@ -12,20 +12,16 @@ const Home = ({uid,...props}) => {
     const location = useLocation();
     const [reqState,setReqState] = useState({
         pendingReqs:{},
-        completedReqs:{},
-        userInfo:{}
+        completedReqs:{}
     });
     const {send,loading} = UseAxios();
     useEffect(()=> {
         let pendingReqs;
         let completed;
-        let userInfo;
+        
         const getData = async() => {
-            await api.get(API.GET_USER+location.state.uid).then((resp) => {
-                userInfo=resp;
-            });
 
-            await api.get(API.GET_VISITS,userInfo.data.provider).then( (response) =>{
+            await api.get(API.GET_VISITS,location.state.uid).then( (response) =>{
                 if(response && response.status === 200){
                     pendingReqs = response;
                 }
@@ -35,7 +31,7 @@ const Home = ({uid,...props}) => {
         }
         getData();
         if(userInfo && pendingReqs){
-            setReqState({...reqState,pendingReqs:pendingReqs.data,completedReqs:completed.data,userInfo:userInfo.data});
+            setReqState({...reqState,pendingReqs:pendingReqs.data});
         }
     },[]);
 
