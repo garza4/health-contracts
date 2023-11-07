@@ -45,7 +45,7 @@ const Login = () => {
         
           await api.post(options.url,options.data).then( (response) =>{
             if(response && response.status === 200){
-                navigate(constants.URI.landingPage);
+                navigate(constants.URI.landingPage, { replace: true, state: {uid:loginState.uName} });
                 // setLoginState({...loginState,response:response.status});
             }
             }).catch((error) =>{

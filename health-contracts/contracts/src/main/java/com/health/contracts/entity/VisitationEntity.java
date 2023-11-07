@@ -25,7 +25,7 @@ public class VisitationEntity {
 	
 	@Column(name="uid")
 	String uid;
-	
+        
 	@Column(name="comments")
 	String comments;
 	

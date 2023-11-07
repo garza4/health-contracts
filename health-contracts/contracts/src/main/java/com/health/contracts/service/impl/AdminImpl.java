@@ -6,8 +6,10 @@ import org.springframework.stereotype.Controller;
 
 import com.health.contracts.entity.VisitationEntity;
 import com.health.contracts.model.LogVisitationReq;
+import com.health.contracts.model.VisitationLog;
 import com.health.contracts.repository.AdminRepository;
 import com.health.contracts.repository.UserRepository;
+import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,6 +43,19 @@ public class AdminImpl implements Admin{
                 log.info("user is: " + user.toString());   
                 log.error("could not log visitation for user",e);
             }
-	}
-	
+        }
+        
+    @Override
+    public VisitationLog getVisits(String provider) {
+        List<VisitationEntity> logs = null;
+        VisitationLog totalLog = new VisitationLog();
+        try{
+            logs = adminRepo.getVisitations(provider);
+            totalLog.setVisitations(logs);
+        }catch(Exception e){
+            log.error("error getting visitations",e);
+        }
+        return totalLog;
+    }
+
 }

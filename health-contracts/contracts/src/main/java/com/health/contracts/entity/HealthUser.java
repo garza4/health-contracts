@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +25,7 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HealthUser{
+public class HealthUser implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long upkid;
@@ -35,8 +36,8 @@ public class HealthUser{
     @Column(name="role")
     String role;
     
-    @Column(name="company")
-    String company;
+    @Column(name="provider")
+    String provider;
     
     @Column(name="first_name")
     String firstName;

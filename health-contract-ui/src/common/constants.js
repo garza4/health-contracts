@@ -1,6 +1,11 @@
 export const URI = {
     login:'/',
-    landingPage:'home'
+    landingPage:'home',
+}
+
+export const API = {
+    GET_USER: '/users/get/', // /{user}
+    GET_VISITS:'/admin/get-visits/',// /{provider}
 }
 
 export const PENDING = "pending";
