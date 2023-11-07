@@ -1,6 +1,6 @@
 import { Col, Row } from "react-bootstrap";
 import ContractViewCard from "../components/ContractViewCard";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from '../common/axios';
 import { UseAxios } from "../hooks/useAxios";
 import { COMPLETED, PENDING } from "../common/constants";
@@ -37,6 +37,7 @@ const Home = () => {
     // },[]);
 
     return(
+        <React.Fragment>
         <div className="homePage">
             <Row>
                 <Col>
@@ -50,6 +51,7 @@ const Home = () => {
                 </Col>
             </Row>
         </div>
+        </React.Fragment>
     )
 }
 export default Home;

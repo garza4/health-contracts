@@ -2,31 +2,33 @@ import { useState } from 'react';
 import {UseAxios} from '../hooks/useAxios';
 import * as constants from '../common/constants';
 import { Form,Button, Col, Row } from 'react-bootstrap';
-import { useNavigate } from "react-router-dom";
 import React from "react";
 import ContractViewCard from '../components/ContractViewCard';
 import api from '../common/axios';
+import { Navigate, useNavigate } from "react-router-dom";
+
 const defaultLoginState = {
-    email:"",
+    uName:"",
     password:"",
     response:""
 }
 const Login = () => {
     const [loginState,setLoginState] = useState(defaultLoginState);
     const {send,loading} = UseAxios();
-    const history = useNavigate();
+    const navigate = useNavigate();
 
-    const handleInput = (e,email) => {
-        if(email ==='email'){
-            setLoginState({...loginState,email:e.target.value})
+    const handleInput = (e,inp) => {
+        if(inp ==='user'){
+            setLoginState({...loginState,uName:e.target.value})
         }else{
             setLoginState({...loginState,password:e.target.value})
         }
     }
 
-    const applicationLogin = async () => {
+    const applicationLogin = async (e) => {
+        e.preventDefault();
         const authPayload = {
-            uid:loginState.email,
+            uid:loginState.uName,
             password:loginState.password
         }
         const options = {
@@ -43,8 +45,8 @@ const Login = () => {
         
           await api.post(options.url,options.data).then( (response) =>{
             if(response && response.status === 200){
-                console.log(response);
-                history(constants.URI.landingPage);
+                navigate(constants.URI.landingPage);
+                // setLoginState({...loginState,response:response.status});
             }
             }).catch((error) =>{
                 console.log(error);
@@ -52,11 +54,12 @@ const Login = () => {
     }
 
     return(
+        <React.Fragment>
         <Row>
             <Col>
-                <Form onSubmit={()=>applicationLogin()}>
+                <Form onSubmit={(e)=>applicationLogin(e)}>
                     <Form.Group className="mb-3" 
-                        onChange={(e)=> handleInput(e,'email')}
+                        onChange={(e)=> handleInput(e,'user')}
                         controlId="exampleForm.ControlInput1">
                         <Form.Label>User ID</Form.Label>
                         <Form.Control />
@@ -76,6 +79,7 @@ const Login = () => {
             {/* uncomment to test view card:  
             <ContractViewCard cardTitle={"first card"} bodyText={"some text"} entryType={"type1"}/> */}
         </Row> 
+        </React.Fragment>
     )
 }
 export default Login;

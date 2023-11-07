@@ -1,6 +1,6 @@
 export const URI = {
-    login:'/authenticate',
-    landingPage:'/home'
+    login:'/',
+    landingPage:'home'
 }
 
 export const PENDING = "pending";

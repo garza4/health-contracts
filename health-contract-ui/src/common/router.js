@@ -1,22 +1,18 @@
 import {
     createBrowserRouter,
+    createRoutesFromElements,
+    Route,
     RouterProvider
   } from "react-router-dom";
 import Login from "../pages/login";
-import { createRoot } from "react-dom/client";
 import Home from "../pages/home";
+import { URI } from "./constants";
 
-const Router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Login/>,
-  },
-  {
-    path:"/home",
-    element:<Home/>
-  }
-]);
-createRoot(document.getElementById("root")).render(
-    <RouterProvider router={Router} />
-);
+const Router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path={URI.login} element={<Login/>}>
+      <Route exact index path={URI.landingPage} element={<Home />} />
+    </Route>
+  )
+)
 export default Router;
