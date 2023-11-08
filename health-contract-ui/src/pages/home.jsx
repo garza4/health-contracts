@@ -14,25 +14,18 @@ const Home = ({uid,...props}) => {
         pendingReqs:{},
         completedReqs:{}
     });
-    const {send,loading} = UseAxios();
     useEffect(()=> {
-        let pendingReqs;
-        let completed;
-        
         const getData = async() => {
 
-            await api.get(API.GET_VISITS,location.state.uid).then( (response) =>{
+            await api.get(API.GET_VISITS+location.state.uid).then( (response) =>{
                 if(response && response.status === 200){
-                    pendingReqs = response;
+                    setReqState({...reqState,pendingReqs:response.data});
                 }
                 }).catch((error) =>{
                     console.log(error);
             });
         }
         getData();
-        if(userInfo && pendingReqs){
-            setReqState({...reqState,pendingReqs:pendingReqs.data});
-        }
     },[]);
 
     return(
@@ -40,7 +33,7 @@ const Home = ({uid,...props}) => {
         <div className="homePage">
             <Row>
                 <Col>
-                    <ContractViewCard cardTitle={"Log Visit"} bodyText={"Visitations"} entryType={PENDING}/>               
+                    <ContractViewCard cardTitle={"Log Visit"} bodyText={"Visitations"} entryType={PENDING} data={reqState.pendingReqs} uid={uid}/>               
                 </Col>
                 <Col>
                     <ContractViewCard cardTitle={"second card"} bodyText={"some text"} entryType={COMPLETED}/>

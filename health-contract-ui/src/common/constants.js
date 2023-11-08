@@ -6,6 +6,7 @@ export const URI = {
 export const API = {
     GET_USER: '/users/get/', // /{user}
     GET_VISITS:'/admin/get-visits/',// /{provider}
+    SAVE_VISIT_TO_SYSTEM:'/admin/log-visit'
 }
 
 export const PENDING = "pending";

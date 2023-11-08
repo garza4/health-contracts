@@ -3,10 +3,9 @@ import AddLogModal from "./AddLogModal";
 import { useEffect, useState } from "react";
 import ContractEntry from "./ContractEntry";
 
-const ContractViewCard = ({cardTitle, bodyText, entryType,data, ...props}) => {
+const ContractViewCard = ({cardTitle, bodyText, entryType,data,uid, ...props}) => {
     const [modalLogState,setModalLogState] = useState({
-        firstName:"",
-        lastName:"",
+        uid:uid,
         service:"",
         costOfVisit:"",
         additionalComments:""
@@ -21,14 +20,14 @@ const ContractViewCard = ({cardTitle, bodyText, entryType,data, ...props}) => {
                     <Card.Text>
                         {bodyText}
                     </Card.Text>
-                    <Accordion defaultActiveKey={0}>
-                        <ContractEntry entryType={entryType} data={{}}/>
+                    <Accordion defaultActiveKey="0">
+                        <ContractEntry entryType={entryType} data={data}/>
                     </Accordion>
                     <Button onClick={() => setOpenModal(!openModal)} variant="primary">Log Request</Button>
                 </Card.Body>
             </Card>
             {openModal &&
-                <AddLogModal info={modalLogState} saveLog={setModalLogState} open={openModal} setOpen={setOpenModal} entryType={entryType}/>
+                <AddLogModal info={modalLogState} setUserInfo={setModalLogState} saveLog={setModalLogState} open={openModal} setOpen={setOpenModal} entryType={entryType}/>
             }
         </div>
     )

@@ -1,52 +1,46 @@
 import Accordion from "react-bootstrap/Accordion";
 import Table from 'react-bootstrap/Table';
+import { PENDING } from "../common/constants";
 
-const ContractEntry = ({entryType,data,...props}) => {
+const ContractEntry = ({entryType,data,uid,...props}) => {
 
-    const constructEntry = (entry) => {
-        if(entryType === 'request'){
-            return (
-                <Accordion.Item>
-                    <Accordion.Header>
-                        <row>
-                            Patient name: {entry.name?entry.name:""}   Date:  {entry.requestDate?entry.requestDate:""}  Amount: {entry.amount?entry.amount:""}
-                        </row>
-                    </Accordion.Header>
-                    <Table striped bordered hover> 
-                        <thead>
-                            Request ID
-                        </thead>
-                        <thead>
-                            Patient Name
-                        </thead>
-                        <thead>
-                            Cost of Care
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    {entry.id?entry.id:""}
-                                </td>
-                                <td>
-                                    {entry.name?entry.name:""}
-                                </td>
-                                <td>
-                                    {entry.cost?entry.cost:""}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </Table>
-                </Accordion.Item>
-            )
-        }
-
-    }
 
     return(
-        // data ?
-        //     data.map((entry =>{
-        //         constructEntry(entry)
-        //     })):
+        data && data.visitations ?
+            data.visitations.map((log,i) => {
+                return(
+                    <Accordion.Item eventKey={i}>
+                        <Accordion.Header>
+                            Patient name: {log.uid?log.uid:""}    Amount: {log.requestedFunds?log.requestedFunds:""}
+                        </Accordion.Header>
+                        <Accordion.Body>
+                            <Table striped bordered hover> 
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Request ID
+                                        </th>
+                                        <th>
+                                            Cost of Care
+                                        </th>
+                                    </tr>
+                                    
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            {log.uid?log.uid:""}
+                                        </td>
+                                        <td>
+                                            {log.requestedFunds?log.requestedFunds:""}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </Table>
+                        </Accordion.Body>
+                    </Accordion.Item>
+                )})
+        :
         <>no data</>
     );
 
