@@ -1,9 +1,9 @@
-import { Accordion, Button, Card } from "react-bootstrap";
+import { Accordion, Button, Card, Col, Row } from "react-bootstrap";
 import AddLogModal from "./AddLogModal";
 import { useEffect, useState } from "react";
 import ContractEntry from "./ContractEntry";
 
-const ContractViewCard = ({cardTitle, bodyText, entryType,data,uid, ...props}) => {
+const ContractViewCard = ({cardTitle, bodyText, entryType,data,setData,uid, ...props}) => {
     const [modalLogState,setModalLogState] = useState({
         uid:uid,
         service:"",
@@ -13,7 +13,7 @@ const ContractViewCard = ({cardTitle, bodyText, entryType,data,uid, ...props}) =
     const [openModal,setOpenModal] = useState(false);
 
     return(
-        <div>
+        <Col>
             <Card style={{ width: '18rem' }}>
                 <Card.Body>
                     <Card.Title>{cardTitle}</Card.Title>
@@ -27,9 +27,17 @@ const ContractViewCard = ({cardTitle, bodyText, entryType,data,uid, ...props}) =
                 </Card.Body>
             </Card>
             {openModal &&
-                <AddLogModal info={modalLogState} setUserInfo={setModalLogState} saveLog={setModalLogState} open={openModal} setOpen={setOpenModal} entryType={entryType}/>
+                <AddLogModal 
+                    info={modalLogState} 
+                    setUserInfo={setModalLogState} 
+                    saveLog={setModalLogState} 
+                    open={openModal} 
+                    setOpen={setOpenModal} 
+                    entryType={entryType}
+                    data={data}
+                    setData={setData}/>
             }
-        </div>
+        </Col>
     )
 }
 

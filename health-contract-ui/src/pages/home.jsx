@@ -33,7 +33,7 @@ const Home = ({uid,...props}) => {
         <div className="homePage">
             <Row>
                 <Col>
-                    <ContractViewCard cardTitle={"Log Visit"} bodyText={"Visitations"} entryType={PENDING} data={reqState.pendingReqs} uid={uid}/>               
+                    <ContractViewCard cardTitle={"Log Visit"} bodyText={"Visitations"} entryType={PENDING} data={reqState.pendingReqs} setData={setReqState} uid={uid}/>               
                 </Col>
                 <Col>
                     <ContractViewCard cardTitle={"second card"} bodyText={"some text"} entryType={COMPLETED}/>

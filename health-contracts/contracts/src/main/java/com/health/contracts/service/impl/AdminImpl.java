@@ -34,6 +34,7 @@ public class AdminImpl implements Admin{
                 VisitationEntity visit = VisitationEntity.builder()
                     .visitRef(null)
                     .status('w')
+                    .provider(user.getProvider())
                     .comments(req.getComments())
                     .service(req.getService())
                     .requestedFunds(req.getReqForFundsUSD())

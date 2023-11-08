@@ -3,8 +3,6 @@ import Table from 'react-bootstrap/Table';
 import { PENDING } from "../common/constants";
 
 const ContractEntry = ({entryType,data,uid,...props}) => {
-
-
     return(
         data && data.visitations ?
             data.visitations.map((log,i) => {
@@ -23,6 +21,12 @@ const ContractEntry = ({entryType,data,uid,...props}) => {
                                         <th>
                                             Cost of Care
                                         </th>
+                                        <th>
+                                            Service
+                                        </th>
+                                        <th>
+                                            Comment
+                                        </th>
                                     </tr>
                                     
                                 </thead>
@@ -33,6 +37,12 @@ const ContractEntry = ({entryType,data,uid,...props}) => {
                                         </td>
                                         <td>
                                             {log.requestedFunds?log.requestedFunds:""}
+                                        </td>
+                                        <td>
+                                            {log.service?log.service:""}
+                                        </td>
+                                        <td>
+                                            {log.comments?log.comments:""}
                                         </td>
                                     </tr>
                                 </tbody>

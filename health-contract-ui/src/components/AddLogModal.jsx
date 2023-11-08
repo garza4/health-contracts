@@ -3,7 +3,7 @@ import { Button, Form, Modal } from "react-bootstrap"
 import { API, PENDING } from "../common/constants";
 import api from "../common/axios";
 
-const AddLogModal = ({info,setUserInfo,open,setOpen,entryType,...props}) =>{
+const AddLogModal = ({info,setUserInfo,open,setOpen,entryType,data,setData,...props}) =>{
     const [inSave,setInSave] = useState({saved:false,saveText:"Save",editText:"Edit"});
     const handleSave = () => {
         let saveState = inSave.saved;
@@ -15,9 +15,18 @@ const AddLogModal = ({info,setUserInfo,open,setOpen,entryType,...props}) =>{
             "uid":info.uid,
             "comments":info.additionalComments,
             "service":info.service,
-            "req_funds":info.costOFVisit     
+            "req_funds":info.costOfVisit     
         }
-        api.put(API.SAVE_VISIT_TO_SYSTEM,)
+        console.log(request);
+        api.put(API.SAVE_VISIT_TO_SYSTEM,JSON.stringify(request)).then(async (resp) => {
+            if(resp.status === 200){
+                await api.get(API.GET_VISITS+info.uid).then( (response) =>{
+                    if(response && response.status === 200){
+                        setData({...data,pendingReqs:response.data});
+                    }
+                });
+            }
+        });
     }
     return(
         <div
