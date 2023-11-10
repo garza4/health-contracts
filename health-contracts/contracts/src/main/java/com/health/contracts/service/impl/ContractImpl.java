@@ -48,7 +48,7 @@ public class ContractImpl implements ContractApi {
 			log.info("Transferring {} funds to user", req.getAmount());
 			server.accounts().account(req.getId());
 
-			if (Double.valueOf(accountImpl.checkBalance(req.getPublicMasterAccount()).getBalances().get(0).getBalance()) < Double.valueOf(req.getAmount())) {
+			if (Double.valueOf(accountImpl.checkBalance().getBalances().get(0).getBalance()) < Double.valueOf(req.getAmount())) {
 				log.error("could not transfer funds at this moment due to lack of funds");
 				throw new Exception("Not enough funds for this request, try again later");
 			}

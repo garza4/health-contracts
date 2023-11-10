@@ -11,5 +11,5 @@ public interface Account {
 
 	public String fundAccount();
 
-	public BalanceList checkBalance(String stellarAcct);
+	public BalanceList checkBalance();
 }

@@ -28,7 +28,7 @@
 //    public WebSecurity(UserImpl userImpl){
 //        this.userImpl=userImpl;
 //    }
-//    
+//
 //    @Bean
 //    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 //            http
@@ -36,7 +36,7 @@
 //                            .requestMatchers("/", "/home").permitAll()
 //                            .anyRequest().authenticated()
 //                    )
-//                    
+//
 //                    .logout((logout) -> logout.permitAll());
 //
 //            return http.build();
@@ -53,5 +53,5 @@
 //
 //            return new InMemoryUserDetailsManager(user);
 //    }
-//    
+//
 //}

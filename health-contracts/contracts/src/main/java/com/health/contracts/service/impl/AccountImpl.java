@@ -2,7 +2,12 @@ package com.health.contracts.service.impl;
 
 import java.util.ArrayList;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.health.contracts.entity.ProviderEntity;
+import com.health.contracts.model.HealthUserDetails;
+import com.health.contracts.repository.ProviderRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.stellar.sdk.KeyPair;
 import org.stellar.sdk.Server;
@@ -19,11 +24,14 @@ import com.health.contracts.model.StellarAccount;
 public class AccountImpl implements Account {
 	private String stellarServer = "https://horizon-testnet.stellar.org";
 	private final Server server = new Server(stellarServer);
-//	private IAuthenticationFacade userContext;
-	
-	@Autowired
-	public AccountImpl() {
-//		this.userContext=userContext;
+
+	private ProviderRepository providerRepo;
+
+	private UserDetailsService userDetailsService;
+
+	public AccountImpl(ProviderRepository providerRepo,UserDetailsService userDetailsService){
+		this.providerRepo = providerRepo;
+		this.userDetailsService = userDetailsService;
 	}
 
 	@Override
@@ -41,13 +49,19 @@ public class AccountImpl implements Account {
 	}
 
 	@Override
-	public BalanceList checkBalance(String stellarAcct) {
+	public BalanceList checkBalance() {
 		BalanceList balanceList = new BalanceList();
 		Boolean hasBalance = false;
-//		log.info("checking account for {}",userContext.getUserContext().getUid());
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String username = auth.getName();
+		HealthUserDetails hUser = (HealthUserDetails) userDetailsService.loadUserByUsername(username);
+
+		String provider = hUser.getUser().getProvider();
+//		log.info("checking account for {}",userContext.getUserContext().getUser().getProvider());
 		try {
-			AccountResponse acct = server.accounts().account(stellarAcct);
-			if(acct.getBalances().length ==0) {
+			ProviderEntity account = providerRepo.getAccountId(provider);
+			AccountResponse acct = server.accounts().account(account.getAcctId());
+			if(acct.getBalances().length == 0) {
 				log.info("no balances");
 			}else hasBalance=true;
 			if(hasBalance) {

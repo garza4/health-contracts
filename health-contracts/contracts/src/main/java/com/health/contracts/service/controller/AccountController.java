@@ -15,9 +15,9 @@ public class AccountController {
 	@Autowired
 	AccountImpl accountImpl;
 
-	@PostMapping(value = "/account/balance/{account}")
-	public BalanceList checkBalance(@PathVariable String account) {
-		return accountImpl.checkBalance(account);
+	@GetMapping(value = "/account/balance")
+	public BalanceList checkBalance() {
+		return accountImpl.checkBalance();
 	}
 
 	@GetMapping(value="/account/create")

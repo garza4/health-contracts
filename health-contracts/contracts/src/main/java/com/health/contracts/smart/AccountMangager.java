@@ -34,7 +34,7 @@ public class AccountMangager {
     public PaymentDecisions manageMasterAccount(){
         var finalDecision = new PaymentDecisions(new ArrayList<>(),new ArrayList<>());
         try{
-            BalanceList balance = accountImpl.checkBalance(account);
+            BalanceList balance = accountImpl.checkBalance();
             List<FundReceiptEntity> receipts = receiptRepository.getPendingReceipts();
             String accountBalance = balance.getBalances().get(0).getBalance();
             

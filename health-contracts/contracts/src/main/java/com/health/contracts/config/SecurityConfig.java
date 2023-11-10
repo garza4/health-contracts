@@ -33,7 +33,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -56,7 +55,11 @@ public class SecurityConfig extends WebSecurityConfiguration{
             .csrf((csrf) -> csrf
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())   
 				.csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
-			).addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
+			).addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+				.sessionManagement((session)->session
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         //TODO: figure out what is going on here...
 //        http
 //            .authorizeHttpRequests((auth)-> 
@@ -90,24 +93,21 @@ public class SecurityConfig extends WebSecurityConfiguration{
 	
     @Bean
     public UserDetailsService userDetailsService(){
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                try{
-                    PasswordEncoder encoder = PasswordEncoder();
-                    log.info("get user details from db");
-                    HealthUser authUser = userRepo.getUserByUName(username);
-                    log.info(authUser.toString());
-                    HealthUserDetails hUser = new HealthUserDetails();
-                    hUser.setUser(authUser);
-                    hUser.setPassword(authUser.getPassword());
-                    hUser.setUserName(authUser.getUName());
-                    log.info("health user: " + hUser.getUser());
-                    return hUser;
-                }catch(UsernameNotFoundException e){
-                    log.error("could not find user");
-                    throw new UsernameNotFoundException("username not found");
-                }
+        return username -> {
+            try{
+                PasswordEncoder encoder = PasswordEncoder();
+                log.info("get user details from db for {}",username);
+                HealthUser authUser = userRepo.getUserByUName(username);
+                log.info(authUser.toString());
+                HealthUserDetails hUser = new HealthUserDetails();
+                hUser.setUser(authUser);
+                hUser.setPassword(authUser.getPassword());
+                hUser.setUserName(authUser.getUName());
+                log.info("health user: " + hUser.getUser());
+                return hUser;
+            }catch(UsernameNotFoundException e){
+                log.error("could not find user");
+                throw new UsernameNotFoundException("username not found");
             }
         };
     }

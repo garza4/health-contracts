@@ -73,6 +73,7 @@ public class JwtTokenFilter extends OncePerRequestFilter{
                          
                             log.debug("jwt token: {}",jwtHeader);
                             String uid = getUserName(jwtHeader);
+                            log.debug("uid is: " + uid);
                             Jwts.builder().setClaims(new HashMap<String,Object>()).setSubject(uid).setIssuedAt(new Date(System.currentTimeMillis()))
                                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                                 .signWith(SignatureAlgorithm.HS256, "secret").compact();
@@ -91,7 +92,7 @@ public class JwtTokenFilter extends OncePerRequestFilter{
                                 List<GrantedAuthority> grantedAuth = new ArrayList();
                                 grantedAuth.add(getGrantedAuthority(hUser.getRole()));
                                 final UsernamePasswordAuthenticationToken authentication = 
-                                        new UsernamePasswordAuthenticationToken(hUser,hUser,grantedAuth);
+                                        new UsernamePasswordAuthenticationToken(hUser.getUName(),hUser.getPassword(),grantedAuth);
                                 SecurityContextHolder.getContext().setAuthentication(authentication);
                             }
                             filterChain.doFilter(request,response);

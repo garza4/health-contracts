@@ -24,6 +24,10 @@ const Home = ({uid,...props}) => {
                 }).catch((error) =>{
                     console.log(error);
             });
+
+            await api.get('/account/balance').then((response) => {
+                console.log(response);
+            })
         }
         getData();
     },[]);
