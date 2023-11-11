@@ -2,6 +2,7 @@ import { Accordion, Button, Card, Col, Row } from "react-bootstrap";
 import AddLogModal from "./AddLogModal";
 import { useEffect, useState } from "react";
 import ContractEntry from "./ContractEntry";
+import { PENDING, REQUEST } from "../common/constants";
 
 const ContractViewCard = ({cardTitle, bodyText, entryType,data,setData,uid, ...props}) => {
     const [modalLogState,setModalLogState] = useState({
@@ -14,7 +15,7 @@ const ContractViewCard = ({cardTitle, bodyText, entryType,data,setData,uid, ...p
 
     return(
         <Col>
-            <Card style={{ width: '18rem' }}>
+            <Card style={{ width: '30rem' }}>
                 <Card.Body>
                     <Card.Title>{cardTitle}</Card.Title>
                     <Card.Text>
@@ -23,7 +24,7 @@ const ContractViewCard = ({cardTitle, bodyText, entryType,data,setData,uid, ...p
                     <Accordion defaultActiveKey="0">
                         <ContractEntry entryType={entryType} data={data}/>
                     </Accordion>
-                    <Button onClick={() => setOpenModal(!openModal)} variant="primary">Log Request</Button>
+                    {entryType===PENDING && <Button onClick={() => setOpenModal(!openModal)} variant="primary">Log Request</Button>}
                 </Card.Body>
             </Card>
             {openModal &&

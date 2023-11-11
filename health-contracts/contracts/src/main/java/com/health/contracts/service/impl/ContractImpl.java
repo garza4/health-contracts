@@ -4,7 +4,6 @@ import com.health.contracts.entity.FundReceiptEntity;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
 import org.springframework.stereotype.Component;
 import org.stellar.sdk.AssetTypeNative;
 import org.stellar.sdk.KeyPair;
@@ -46,20 +45,23 @@ public class ContractImpl implements ContractApi {
 		ReqFundsResp transfer = new ReqFundsResp();
 		try {
 			log.info("Transferring {} funds to user", req.getAmount());
-			server.accounts().account(req.getId());
+			//master account GDHRL4NWLAFGN7GYMTQADYK3ED3U2JNJE5DYHLM6BGEWAOR3FC5VHUPL
+			var masterAccount = "GDHRL4NWLAFGN7GYMTQADYK3ED3U2JNJE5DYHLM6BGEWAOR3FC5VHUPL";
+			server.accounts().account(masterAccount);
 
 			if (Double.valueOf(accountImpl.checkBalance().getBalances().get(0).getBalance()) < Double.valueOf(req.getAmount())) {
 				log.error("could not transfer funds at this moment due to lack of funds");
 				throw new Exception("Not enough funds for this request, try again later");
 			}
 			AccountResponse sourceAccount = server.accounts().account(req.getPublicMasterAccount());
-			Transaction transaction = createTransaction(sourceAccount, req.getId(), req.getAmount(),req.getSourceSecret());
+			Transaction transaction = createTransaction(sourceAccount, masterAccount, req.getAmount(),req.getSourceSecret());
 			response = server.submitTransaction(transaction);
 			log.info("Successfull transfer of funds {}", response.getHash());
 			transfer.setAmount(req.getAmount());
-			transfer.setDestination(req.getId());
+			transfer.setDestination(masterAccount);
 			transfer.setFrom(req.getPublicMasterAccount());
-                        receiptRepo.save(new FundReceiptEntity(null,new Timestamp(System.currentTimeMillis()),req.getAmount(),req.getAdminUser(),req.getPatient(),"P"));
+			Timestamp timeOfTransaction = new Timestamp(System.currentTimeMillis());
+			receiptRepo.save(new FundReceiptEntity(null,timeOfTransaction,req.getAmount(),req.getAdminUser(),req.getPatient(),"P"));
                         
 		} catch (IOException io) {
 			log.error("stellar returned io error", io);

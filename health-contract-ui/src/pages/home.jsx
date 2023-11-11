@@ -3,8 +3,10 @@ import ContractViewCard from "../components/ContractViewCard";
 import React, { useEffect, useState } from "react";
 import api from '../common/axios';
 import { UseAxios } from "../hooks/useAxios";
-import { API, COMPLETED, PENDING } from "../common/constants";
+import { API, COMPLETED, PENDING, REQUEST } from "../common/constants";
 import {useLocation} from 'react-router-dom';
+import AccountInfo from "../components/AccountInfo";
+import './home.scss';
 
 
 
@@ -12,39 +14,45 @@ const Home = ({uid,...props}) => {
     const location = useLocation();
     const [reqState,setReqState] = useState({
         pendingReqs:{},
-        completedReqs:{}
+        completedReqs:{},
+        accountInfo:{}
     });
     useEffect(()=> {
         const getData = async() => {
-
+            let pendingData;
+            let balanceInfo;
             await api.get(API.GET_VISITS+location.state.uid).then( (response) =>{
                 if(response && response.status === 200){
-                    setReqState({...reqState,pendingReqs:response.data});
+                    pendingData = response.data;
                 }
                 }).catch((error) =>{
                     console.log(error);
             });
 
-            await api.get('/account/balance').then((response) => {
-                console.log(response);
+            await api.get(API.GET_BALANCE).then((response) => {
+                balanceInfo = response.data;
             })
+            setReqState({...reqState,accountInfo:balanceInfo,pendingReqs:pendingData});
         }
         getData();
     },[]);
 
     return(
         <React.Fragment>
-        <div className="homePage">
+        <div className='homePage'>
             <Row>
                 <Col>
                     <ContractViewCard cardTitle={"Log Visit"} bodyText={"Visitations"} entryType={PENDING} data={reqState.pendingReqs} setData={setReqState} uid={uid}/>               
                 </Col>
                 <Col>
-                    <ContractViewCard cardTitle={"second card"} bodyText={"some text"} entryType={COMPLETED}/>
+                    <ContractViewCard cardTitle={"Request Funds"} bodyText={"Receive Funds for visitations"} entryType={REQUEST} data={reqState.pendingReqs} setData={setReqState} uid={uid}/>
                 </Col>
                 <Col>
                     <ContractViewCard cardTitle={"third card"} bodyText={"some text"} entryType={"type1"}/>
                 </Col>
+            </Row>
+            <Row>
+                <AccountInfo publicAccountNumber={""} balance={reqState.accountInfo.balances?reqState.accountInfo.balances[0].balance:""}/>
             </Row>
         </div>
         </React.Fragment>

@@ -1,57 +1,122 @@
 import Accordion from "react-bootstrap/Accordion";
 import Table from 'react-bootstrap/Table';
-import { PENDING } from "../common/constants";
+import { API, PENDING, REQUEST } from "../common/constants";
+import { Button, Form } from "react-bootstrap";
+import api from "../common/axios";
+import { useEffect, useState } from "react";
+import AddLogModal from "./AddLogModal";
+import ConfirmSecret from "./ConfirmSecret";
 
 const ContractEntry = ({entryType,data,uid,...props}) => {
-    return(
-        data && data.visitations ?
+    const [openModal,setOpenModal] = useState(false);
+    const [amountToFund,setAmountToFund] = useState([]);
+    const [visitationData,setVisitationData] = useState({logs:[],secret:""});
+    useEffect(()=>{
+        let tempData  = [];
+        if(data && data.visitations){
             data.visitations.map((log,i) => {
-                return(
-                    <Accordion.Item eventKey={i}>
-                        <Accordion.Header>
-                            Patient name: {log.uid?log.uid:""}    Amount: {log.requestedFunds?log.requestedFunds:""}
-                        </Accordion.Header>
-                        <Accordion.Body>
-                            <Table striped bordered hover> 
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            Request ID
-                                        </th>
-                                        <th>
-                                            Cost of Care
-                                        </th>
-                                        <th>
-                                            Service
-                                        </th>
-                                        <th>
-                                            Comment
-                                        </th>
-                                    </tr>
-                                    
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            {log.uid?log.uid:""}
-                                        </td>
-                                        <td>
-                                            {log.requestedFunds?log.requestedFunds:""}
-                                        </td>
-                                        <td>
-                                            {log.service?log.service:""}
-                                        </td>
-                                        <td>
-                                            {log.comments?log.comments:""}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </Table>
-                        </Accordion.Body>
-                    </Accordion.Item>
-                )})
-        :
-        <>no data</>
+                tempData.push({entry:log,amountToFund:""});
+            });
+            setVisitationData({...visitationData,logs:tempData})
+        }
+    },[data])
+    
+    const requestFunds = async (i) => {
+        console.log(visitationData[i]);
+        setOpenModal(!openModal);
+        const request = {
+            amount:visitationData.logs[i].amountToFund,
+            source_secret:visitationData.secret,
+            source_public:"GCKJLDPW6RUGTWCKZ5ZTLHAXU7NGPGELZQHVVNQUKSCSCK5NK7TQE74Z", //should be retrieved from the backend
+            admin_user:uid,
+            patient:visitationData.logs[i].uid
+        }
+        if(visitationData.secret && visitationData.logs[i].amountToFund){
+            await api.post(API.REQ_FUNDS,JSON.stringify(request)).then((response) => {
+                console.log(response);
+            });
+        }
+        
+    }
+
+    const handleAmountToFundEntry = (e,i) => {
+        let tempLogs = {...visitationData};
+        tempLogs.logs[i].amountToFund = e.target.value;
+        setVisitationData({...tempLogs});
+    }
+    return(
+        <>
+            {data && data.visitations ?
+                visitationData.logs.map((log,i) => {
+                    return(
+                        <Accordion.Item eventKey={i}>
+                            <Accordion.Header>
+                                Patient name: {log.entry.uid?log.entry.uid:""}    Amount: {log.entry.requestedFunds?log.entry.requestedFunds:""}
+                            </Accordion.Header>
+                            <Accordion.Body>
+                                <Table striped bordered hover> 
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Request ID
+                                            </th>
+                                            <th>
+                                                Cost of Care
+                                            </th>
+                                            <th>
+                                                Service
+                                            </th>
+                                            <th>
+                                                Comment
+                                            </th>
+                                            {entryType===REQUEST && 
+                                                <th>
+                                                    Amount to fund
+                                                </th>
+                                            }
+                                        </tr>
+                                        
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                {log.entry.uid?log.entry.uid:""}
+                                            </td>
+                                            <td>
+                                                {log.entry.requestedFunds?log.entry.requestedFunds:""}
+                                            </td>
+                                            <td>
+                                                {log.entry.service?log.entry.service:""}
+                                            </td>
+                                            <td>
+                                                {log.entry.comments?log.entry.comments:""}
+                                            </td>
+                                            {entryType === REQUEST && 
+                                                <td>
+                                                    <Form.Group className="toFund" controlId="amount.to.fund">
+                                                        <Form.Control 
+                                                            type="text"
+                                                            onChange={e => handleAmountToFundEntry(e,i)} 
+                                                            value={visitationData.logs[i].amountToFund}
+                                                        />
+                                                    </Form.Group>
+                                                </td>
+                                            }
+                                            
+                                        </tr>
+                                    </tbody>
+                                </Table>
+                                {entryType===REQUEST && <Button variant="success" onClick={(e)=>requestFunds(i)}>Request Funds</Button>}
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    )})
+            :
+            <>no data</>}
+            {openModal &&
+                <ConfirmSecret open={openModal} setOpen={setOpenModal} secret={visitationData} setSecret={setVisitationData}/>
+            }
+        </>
+        
     );
 
 }
