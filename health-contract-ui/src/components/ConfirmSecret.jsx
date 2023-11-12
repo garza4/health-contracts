@@ -1,6 +1,16 @@
 import { Button, Form, Modal } from "react-bootstrap";
+import api from "../common/axios";
+import { API } from "../common/constants";
 
-const ConfirmSecret = ({open,setOpen,setSecret,secret,...props}) => {
+const ConfirmSecret = ({open,setOpen,setSecret,secret,fundReq,...props}) => {
+    const handleSubmit = async (e) => {
+        if(fundReq){
+            await api.post(API.REQ_FUNDS,JSON.stringify(fundReq)).then((response) => {
+                console.log(response);
+            });
+        }
+        setOpen(!open);
+    }
     return (
         <div className="modal show"
             style={{ display: 'block', position: 'initial' }}
@@ -21,7 +31,7 @@ const ConfirmSecret = ({open,setOpen,setSecret,secret,...props}) => {
 
             <Modal.Footer>
                 <Button variant="secondary" onClick={()=> setOpen(!open)}>Close</Button>
-                <Button onClick={(e)=>setOpen(!open)} variant="success">Done</Button>  
+                <Button onClick={(e)=>handleSubmit(e)} variant="success">Submit</Button>  
             </Modal.Footer>
             </Modal.Dialog>
         </div>

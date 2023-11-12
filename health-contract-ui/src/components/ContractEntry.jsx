@@ -10,7 +10,7 @@ import ConfirmSecret from "./ConfirmSecret";
 const ContractEntry = ({entryType,data,uid,...props}) => {
     const [openModal,setOpenModal] = useState(false);
     const [amountToFund,setAmountToFund] = useState([]);
-    const [visitationData,setVisitationData] = useState({logs:[],secret:""});
+    const [visitationData,setVisitationData] = useState({logs:[],secret:"",fundReq:{}});
     useEffect(()=>{
         let tempData  = [];
         if(data && data.visitations){
@@ -31,12 +31,7 @@ const ContractEntry = ({entryType,data,uid,...props}) => {
             admin_user:uid,
             patient:visitationData.logs[i].uid
         }
-        if(visitationData.secret && visitationData.logs[i].amountToFund){
-            await api.post(API.REQ_FUNDS,JSON.stringify(request)).then((response) => {
-                console.log(response);
-            });
-        }
-        
+        setVisitationData({...visitationData,fundReq:request});
     }
 
     const handleAmountToFundEntry = (e,i) => {
@@ -113,7 +108,7 @@ const ContractEntry = ({entryType,data,uid,...props}) => {
             :
             <>no data</>}
             {openModal &&
-                <ConfirmSecret open={openModal} setOpen={setOpenModal} secret={visitationData} setSecret={setVisitationData}/>
+                <ConfirmSecret open={openModal} setOpen={setOpenModal} secret={visitationData} setSecret={setVisitationData} fundReq={visitationData.fundReq}/>
             }
         </>
         
