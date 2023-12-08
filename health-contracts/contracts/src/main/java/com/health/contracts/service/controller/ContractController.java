@@ -1,6 +1,9 @@
 package com.health.contracts.service.controller;
 
+import com.health.contracts.service.impl.ContractApi;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,7 +14,7 @@ import com.health.contracts.service.impl.ContractImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
-@RestController
+@Controller
 @Slf4j
 public class ContractController {
 	@Autowired

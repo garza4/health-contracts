@@ -12,7 +12,7 @@ const ContractViewCard = ({cardTitle, bodyText, entryType,data,setData,uid, ...p
         additionalComments:""
     });
     const [openModal,setOpenModal] = useState(false);
-
+    console.log(data);
     return(
         <Col>
             <Card style={{ width: '30rem' }}>

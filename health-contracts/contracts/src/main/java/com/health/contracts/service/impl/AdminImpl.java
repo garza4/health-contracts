@@ -1,6 +1,7 @@
 package com.health.contracts.service.impl;
 
 import com.health.contracts.entity.HealthUser;
+import com.health.contracts.model.GetLogsResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -48,17 +49,19 @@ public class AdminImpl implements Admin{
         }
         
     @Override
-    public VisitationLog getPendingVisits(String uid) {
+    public GetLogsResp getPendingVisits(String uid) {
         List<VisitationEntity> logs = null;
-        VisitationLog totalLog = new VisitationLog();
+        GetLogsResp logsResp = new GetLogsResp();
         try{
             HealthUser userInfo = userImpl.getUsers(uid);
             logs = adminRepo.getVisitations(userInfo.getProvider());
-            totalLog.setVisitations(logs);
+            List<VisitationEntity> completedReqs = adminRepo.getCompletedVisitations(userInfo.getProvider());
+            logsResp.setVisitationLog(logs);
+            logsResp.setCompletedReqs(completedReqs);
         }catch(Exception e){
             log.error("error getting visitations",e);
         }
-        return totalLog;
+        return logsResp;
     }
 
 }

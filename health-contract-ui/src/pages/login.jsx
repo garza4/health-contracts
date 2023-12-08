@@ -6,6 +6,7 @@ import React from "react";
 import ContractViewCard from '../components/ContractViewCard';
 import api from '../common/axios';
 import { Navigate, useNavigate } from "react-router-dom";
+import './login.scss';
 
 const defaultLoginState = {
     uName:"",

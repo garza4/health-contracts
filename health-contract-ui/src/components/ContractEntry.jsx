@@ -13,8 +13,8 @@ const ContractEntry = ({entryType,data,uid,...props}) => {
     const [visitationData,setVisitationData] = useState({logs:[],secret:"",fundReq:{}});
     useEffect(()=>{
         let tempData  = [];
-        if(data && data.visitations){
-            data.visitations.map((log,i) => {
+        if(data){
+            data.map((log,i) => {
                 tempData.push({entry:log,amountToFund:""});
             });
             setVisitationData({...visitationData,logs:tempData})
@@ -22,7 +22,6 @@ const ContractEntry = ({entryType,data,uid,...props}) => {
     },[data])
     
     const requestFunds = async (i) => {
-        console.log(visitationData[i]);
         setOpenModal(!openModal);
         const request = {
             amount:visitationData.logs[i].amountToFund,
@@ -41,7 +40,7 @@ const ContractEntry = ({entryType,data,uid,...props}) => {
     }
     return(
         <>
-            {data && data.visitations ?
+            {data ?
                 visitationData.logs.map((log,i) => {
                     return(
                         <Accordion.Item eventKey={i}>

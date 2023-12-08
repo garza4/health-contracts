@@ -2,6 +2,7 @@ package com.health.contracts.service.impl;
 
 import java.util.ArrayList;
 
+import com.health.contracts.entity.HealthUser;
 import com.health.contracts.entity.ProviderEntity;
 import com.health.contracts.model.HealthUserDetails;
 import com.health.contracts.repository.ProviderRepository;
@@ -53,8 +54,8 @@ public class AccountImpl implements Account {
 		BalanceList balanceList = new BalanceList();
 		Boolean hasBalance = false;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String username = auth.getName();
-		HealthUserDetails hUser = (HealthUserDetails) userDetailsService.loadUserByUsername(username);
+		HealthUser user = (HealthUser) auth.getPrincipal();
+		HealthUserDetails hUser = (HealthUserDetails) userDetailsService.loadUserByUsername(user.getUName());
 
 		String provider = hUser.getUser().getProvider();
 //		log.info("checking account for {}",userContext.getUserContext().getUser().getProvider());

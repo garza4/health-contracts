@@ -37,13 +37,13 @@ public class VisitationEntity {
 	@Column(name="requested_funds")
 	String requestedFunds;
         
-        @Column(name="upkid")
-        Long upkid;
-        
-        @Column(name="status")
-        Character status;
-        
-        @Column(name="provider")
-        String provider;
+	@Column(name="upkid")
+	Long upkid;
+
+	@Column(name="status")
+	Character status;
+
+	@Column(name="provider")
+	String provider;
 
 }

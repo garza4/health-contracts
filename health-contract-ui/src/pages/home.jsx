@@ -13,9 +13,9 @@ import './home.scss';
 const Home = ({uid,...props}) => {
     const location = useLocation();
     const [reqState,setReqState] = useState({
-        pendingReqs:{},
-        completedReqs:{},
-        accountInfo:{}
+        pendingReqs:[],
+        completedReqs:[],
+        accountInfo:""
     });
     useEffect(()=> {
         const getData = async() => {
@@ -29,10 +29,16 @@ const Home = ({uid,...props}) => {
                     console.log(error);
             });
 
+            let visitLog = pendingData.visitationLog;
+            let completedReq = pendingData.completedReqs;
+
             await api.get(API.GET_BALANCE).then((response) => {
                 balanceInfo = response.data;
             })
-            setReqState({...reqState,accountInfo:balanceInfo,pendingReqs:pendingData});
+            setReqState({accountInfo:balanceInfo,
+                pendingReqs:visitLog,
+                completedReqs:completedReq
+            });
         }
         getData();
     },[]);
@@ -48,7 +54,7 @@ const Home = ({uid,...props}) => {
                     <ContractViewCard cardTitle={"Request Funds"} bodyText={"Receive Funds for visitations"} entryType={REQUEST} data={reqState.pendingReqs} setData={setReqState} uid={uid}/>
                 </Col>
                 <Col>
-                    <ContractViewCard cardTitle={"third card"} bodyText={"some text"} entryType={"type1"}/>
+                    <ContractViewCard cardTitle={"Completed Transactions"} bodyText={"These Funds are now in your account"} entryType={COMPLETED} data={reqState.completedReqs} setData={setReqState} uid={uid}/>
                 </Col>
             </Row>
             <Row>
