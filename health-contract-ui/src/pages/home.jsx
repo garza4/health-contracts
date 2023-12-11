@@ -43,9 +43,24 @@ const Home = ({uid,...props}) => {
         getData();
     },[]);
 
+    const completedRequests = [
+        
+        {"visitRef": 12,
+        "uid": "al_eve_big_inc",
+        "comments": "",
+        "service": "walk",
+        "requestedFunds": "10",
+        "upkid": 100000,
+        "status": "P",
+        "provider": "dog provider"}
+    ];
+    
+
     return(
-        <React.Fragment>
         <div className='homePage'>
+            <Row>
+                <AccountInfo publicAccountNumber={""} balance={reqState.accountInfo.balances?reqState.accountInfo.balances[0].balance:""}/>
+            </Row>
             <Row>
                 <Col>
                     <ContractViewCard cardTitle={"Log Visit"} bodyText={"Visitations"} entryType={PENDING} data={reqState.pendingReqs} setData={setReqState} uid={uid}/>               
@@ -54,14 +69,10 @@ const Home = ({uid,...props}) => {
                     <ContractViewCard cardTitle={"Request Funds"} bodyText={"Receive Funds for visitations"} entryType={REQUEST} data={reqState.pendingReqs} setData={setReqState} uid={uid}/>
                 </Col>
                 <Col>
-                    <ContractViewCard cardTitle={"Completed Transactions"} bodyText={"These Funds are now in your account"} entryType={COMPLETED} data={reqState.completedReqs} setData={setReqState} uid={uid}/>
+                    <ContractViewCard cardTitle={"Completed Transactions"} bodyText={"These Funds have been added to your account"} entryType={COMPLETED} data={completedRequests} setData={setReqState} uid={uid}/>
                 </Col>
             </Row>
-            <Row>
-                <AccountInfo publicAccountNumber={""} balance={reqState.accountInfo.balances?reqState.accountInfo.balances[0].balance:""}/>
-            </Row>
         </div>
-        </React.Fragment>
     )
 }
 export default Home;

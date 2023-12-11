@@ -13,4 +13,4 @@ export const API = {
 
 export const PENDING = "pending";
 export const COMPLETED = "completed";
-export const REQUEST = "requset";
+export const REQUEST = "request";

@@ -1,6 +1,6 @@
 import Accordion from "react-bootstrap/Accordion";
 import Table from 'react-bootstrap/Table';
-import { API, PENDING, REQUEST } from "../common/constants";
+import { API, COMPLETED, PENDING, REQUEST } from "../common/constants";
 import { Button, Form } from "react-bootstrap";
 import api from "../common/axios";
 import { useEffect, useState } from "react";
@@ -85,10 +85,11 @@ const ContractEntry = ({entryType,data,uid,...props}) => {
                                             <td>
                                                 {log.entry.comments?log.entry.comments:""}
                                             </td>
-                                            {entryType === REQUEST && 
+                                            {(entryType === REQUEST || entryType === COMPLETED) && 
                                                 <td>
                                                     <Form.Group className="toFund" controlId="amount.to.fund">
-                                                        <Form.Control 
+                                                        <Form.Control
+                                                            disabled={entryType===COMPLETED} 
                                                             type="text"
                                                             onChange={e => handleAmountToFundEntry(e,i)} 
                                                             value={visitationData.logs[i].amountToFund}

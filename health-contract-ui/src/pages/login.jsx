@@ -3,7 +3,7 @@ import {UseAxios} from '../hooks/useAxios';
 import * as constants from '../common/constants';
 import { Form,Button, Col, Row } from 'react-bootstrap';
 import React from "react";
-import ContractViewCard from '../components/ContractViewCard';
+import Modal from 'react-bootstrap/Modal';
 import api from '../common/axios';
 import { Navigate, useNavigate } from "react-router-dom";
 import './login.scss';
@@ -16,6 +16,7 @@ const defaultLoginState = {
 const Login = () => {
     const [loginState,setLoginState] = useState(defaultLoginState);
     const {send,loading} = UseAxios();
+    const [modalState,setModalState] = useState({modalEmail:"",modalPassword:"",orgName:"",show:false});
     const navigate = useNavigate();
 
     const handleInput = (e,inp) => {
@@ -55,32 +56,59 @@ const Login = () => {
     }
 
     return(
-        <React.Fragment>
-        <Row>
-            <Col>
-                <Form onSubmit={(e)=>applicationLogin(e)}>
-                    <Form.Group className="mb-3" 
-                        onChange={(e)=> handleInput(e,'user')}
-                        controlId="exampleForm.ControlInput1">
-                        <Form.Label>User ID</Form.Label>
-                        <Form.Control />
-                    </Form.Group>
-                    <Form.Group className="mb-3" 
-                    onChange={(e)=> handleInput(e,'password')}
-                    controlId="exampleForm.ControlInput1">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" placeholder="password" />
-                    </Form.Group>
-                    <Button variant="primary" type="submit">
-                        Submit
-                    </Button>
-                </Form> 
-            </Col>
+        <div class="homePage">
+            <Modal show={modalState.show} onHide={e => setModalState({...modalState,show:!modalState.show})} autoFocus={true} centered={true}>
+                <Modal.Header closeButton>
+                    <Modal.Title >Register as admin for organization</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group onChange={e => setModalState({...modalState,modalEmail: e.target.value})}>
+                            <Form.Label>
+                                Email Address
+                            </Form.Label>
+                            <Form.Control type="email" placeholder='email address' autoFocus/>    
+                        </Form.Group>
+                        <Form.Group onChange={e => setModalState({...modalState,modalPassword: e.target.value})}>
+                            <Form.Label>
+                                Password
+                            </Form.Label>
+                            <Form.Control type="password" placeholder='*********' autoFocus/>    
+                        </Form.Group>
+                        <Form.Group onChange={e => setModalState({...modalState,orgName: e.target.value})}>
+                            <Form.Label>
+                                Organization
+                            </Form.Label>
+                            <Form.Control placeholder='Org Name' autoFocus/>    
+                        </Form.Group>
+                        
+                    </Form>
+                </Modal.Body>
 
-            {/* uncomment to test view card:  
-            <ContractViewCard cardTitle={"first card"} bodyText={"some text"} entryType={"type1"}/> */}
-        </Row> 
-        </React.Fragment>
+            </Modal>
+            <Row>
+                <Col>
+                    <Form onSubmit={(e)=>applicationLogin(e)}>
+                        <Form.Group className="mb-3" 
+                            onChange={(e)=> handleInput(e,'user')}
+                            controlId="exampleForm.ControlInput1">
+                            <Form.Label>User ID</Form.Label>
+                            <Form.Control />
+                        </Form.Group>
+                        <Form.Group className="mb-3" 
+                        onChange={(e)=> handleInput(e,'password')}
+                        controlId="exampleForm.ControlInput1">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" placeholder="password" />
+                        </Form.Group>
+                        <Button variant="primary" type="submit">
+                            Submit
+                        </Button>
+                    </Form> 
+                </Col>
+                <Button onClick={ e => setModalState({...modalState,show:true})} variant="link">Register Here</Button>
+            </Row>
+        </div> 
     )
 }
 export default Login;
