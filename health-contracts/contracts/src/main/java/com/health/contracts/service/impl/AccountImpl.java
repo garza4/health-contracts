@@ -1,11 +1,14 @@
 package com.health.contracts.service.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.health.contracts.entity.HealthUser;
 import com.health.contracts.entity.ProviderEntity;
-import com.health.contracts.model.HealthUserDetails;
+import com.health.contracts.model.*;
 import com.health.contracts.repository.ProviderRepository;
+import com.health.contracts.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,8 +19,6 @@ import org.stellar.sdk.responses.AccountResponse;
 import org.stellar.sdk.responses.AccountResponse.Balance;
 
 import lombok.extern.slf4j.Slf4j;
-import com.health.contracts.model.BalanceList;
-import com.health.contracts.model.StellarAccount;
 //import com.health.contracts.security.IAuthenticationFacade;
 
 @Slf4j // or: @Log @CommonsLog @Log4j @Log4j2 @XSlf4j
@@ -30,9 +31,13 @@ public class AccountImpl implements Account {
 
 	private UserDetailsService userDetailsService;
 
-	public AccountImpl(ProviderRepository providerRepo,UserDetailsService userDetailsService){
+	private UserRepository userRepository;
+
+	@Autowired
+	public AccountImpl(ProviderRepository providerRepo,UserDetailsService userDetailsService,UserRepository userRepository){
 		this.providerRepo = providerRepo;
 		this.userDetailsService = userDetailsService;
+		this.userRepository = userRepository;
 	}
 
 	@Override
@@ -88,6 +93,35 @@ public class AccountImpl implements Account {
 	public String fundAccount() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public AddUserToSystemResp addUserToSystem(AddUserToSystemReq req){
+		List<HealthUser> newUser = null;
+		AddUserToSystemResp resp = new AddUserToSystemResp();
+		StellarAccount newUserAcct;
+		try{
+			newUser = userRepository.getUserByName(req.getUserName());
+			if(newUser.size() == 0){
+				newUserAcct = createAccount();
+				userRepository.save(HealthUser.builder()
+						.uName(req.getUserName())
+						.firstName(req.getFirstName())
+						.lastName(req.getLastName())
+						.role("admin")
+						.provider(req.getOrgName())
+						.upkid(null).build());
+				resp.setStatus("S");
+				resp.setStellarAccount(newUserAcct);
+			}else{
+				resp.setStatus("Failed - User already exists in the system");
+				return resp;
+			}
+		}catch (Exception e){
+			log.error("Could not add user to system",e);
+			resp.setStatus("Failed due to system error");
+		}
+		return resp;
 	}
 
 }

@@ -1,8 +1,6 @@
 package com.health.contracts.service.impl;
 
-import com.health.contracts.model.BalanceList;
-import com.health.contracts.model.CheckFundsReq;
-import com.health.contracts.model.StellarAccount;
+import com.health.contracts.model.*;
 
 public interface Account {
 	public StellarAccount createAccount();
@@ -12,4 +10,6 @@ public interface Account {
 	public String fundAccount();
 
 	public BalanceList checkBalance();
+
+	public AddUserToSystemResp addUserToSystem(AddUserToSystemReq req);
 }

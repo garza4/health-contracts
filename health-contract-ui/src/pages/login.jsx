@@ -15,8 +15,7 @@ const defaultLoginState = {
 }
 const Login = () => {
     const [loginState,setLoginState] = useState(defaultLoginState);
-    const {send,loading} = UseAxios();
-    const [modalState,setModalState] = useState({modalEmail:"",modalPassword:"",orgName:"",show:false});
+    const [modalState,setModalState] = useState({modalEmail:"",modalPassword:"",orgName:"",firstName:"",lastName:"",show:false});
     const navigate = useNavigate();
 
     const handleInput = (e,inp) => {
@@ -55,6 +54,37 @@ const Login = () => {
             });
     }
 
+    const registerUser = async() => {
+        const payload = {
+            user_name:modalState.modalEmail, 
+            password:modalState.modalPassword,
+            org_name:modalState.orgName,
+            first_name:modalState.firstName,
+            last_name:modalState.lastName
+        };
+
+        const options = {
+            method: "put",
+            url: "/account/register",
+            data: payload,
+            timeout:600000,
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'Connection':'keep-alive'
+            }
+        };
+
+        await api.post(options.url,options.data).then( (response) =>{
+            if(response && response.status === 200){
+                setModalState({...modalState,show:false});
+                navigate(constants.URI.landingPage, { replace: true, state: {uid:modalState.modalEmail} });
+            }
+            }).catch((error) =>{
+                console.log(error);
+            });
+    }
+
     return(
         <div class="homePage">
             <Modal show={modalState.show} onHide={e => setModalState({...modalState,show:!modalState.show})} autoFocus={true} centered={true}>
@@ -81,10 +111,28 @@ const Login = () => {
                             </Form.Label>
                             <Form.Control placeholder='Org Name' autoFocus/>    
                         </Form.Group>
-                        
+                        <Form.Group onChange={e => setModalState({...modalState,firstName: e.target.value})}>
+                            <Form.Label>
+                                First Name
+                            </Form.Label>
+                            <Form.Control placeholder='First Name' autoFocus/>    
+                        </Form.Group>
+                        <Form.Group onChange={e => setModalState({...modalState,lastName: e.target.value})}>
+                            <Form.Label>
+                                Last Name
+                            </Form.Label>
+                            <Form.Control placeholder='Last Name' autoFocus/>    
+                        </Form.Group>
                     </Form>
                 </Modal.Body>
-
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={e => setModalState({...modalState,show:false})}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={e => registerUser}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
             </Modal>
             <Row>
                 <Col>
