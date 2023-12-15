@@ -48,4 +48,6 @@ public class HealthUser implements Serializable{
     @Column(name="password")
     String password;
 
+    @Column(name="public_address")
+    String publicAddress;
 }

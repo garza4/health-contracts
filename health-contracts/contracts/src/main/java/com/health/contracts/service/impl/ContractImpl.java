@@ -46,7 +46,7 @@ public class ContractImpl implements ContractApi {
 		try {
 			log.info("Transferring {} funds to user", req.getAmount());
 			//master account GDHRL4NWLAFGN7GYMTQADYK3ED3U2JNJE5DYHLM6BGEWAOR3FC5VHUPL
-			var masterAccount = "GDHRL4NWLAFGN7GYMTQADYK3ED3U2JNJE5DYHLM6BGEWAOR3FC5VHUPL";
+			var masterAccount = "GDVE4ZHYDKPDSS7B6NV5IIKAW4P73TXKAZXARCK5QFFC22OWWXIIFHEU";
 			server.accounts().account(masterAccount);
 
 			if (Double.valueOf(accountImpl.checkBalance().getBalances().get(0).getBalance()) < Double.valueOf(req.getAmount())) {

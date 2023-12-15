@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends CrudRepository<HealthUser,String>{
+public interface UserRepository extends CrudRepository<HealthUser,Long>{
     @Query(value="select * from h_user where uid=:uid",nativeQuery=true)
     HealthUser getUserByUName(@Param("uid") String uid);
 
