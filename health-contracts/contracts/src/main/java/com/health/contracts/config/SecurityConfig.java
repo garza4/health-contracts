@@ -21,7 +21,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -44,7 +43,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class SecurityConfig extends WebSecurityConfiguration{
     private final JwtTokenFilter jwtAuthFilter;
     private final UserRepository userRepo;
-//    private final UserAuth userAuth;
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -52,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfiguration{
         // set the name of the attribute the CsrfToken will be populated on
         requestHandler.setCsrfRequestAttributeName(null);        
         http
-            .csrf((csrf) -> csrf
+            .csrf((csrf) -> csrf.ignoringRequestMatchers("/auth/authenticate")
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())   
 				.csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
 			).addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
@@ -61,15 +59,6 @@ public class SecurityConfig extends WebSecurityConfiguration{
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         //TODO: figure out what is going on here...
-//        http
-//            .authorizeHttpRequests((auth)-> 
-//                auth.requestMatchers("/auth/**").permitAll()
-//                .anyRequest()
-//                .authenticated())   
-//            .sessionManagement((session)->session
-//            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//            .authenticationProvider(authenticationProvider())
-//            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
     
