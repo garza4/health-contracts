@@ -4,6 +4,8 @@ import com.health.contracts.entity.FundReceiptEntity;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.stellar.sdk.AssetTypeNative;
 import org.stellar.sdk.KeyPair;
@@ -29,7 +31,10 @@ public class ContractImpl implements ContractApi {
 	private String stellarServer = "https://horizon-testnet.stellar.org";
 	private AccountImpl accountImpl;
 //	private IAuthenticationFacade userContext;
-        private ReceiptRepository receiptRepo;
+	private ReceiptRepository receiptRepo;
+
+	@Value( "${stellar.master.acct}")
+	private String secret;
 	@Autowired
 	public ContractImpl(AccountImpl accountImpl,ReceiptRepository receiptRepo) {
 		this.accountImpl = accountImpl;
@@ -45,20 +50,18 @@ public class ContractImpl implements ContractApi {
 		ReqFundsResp transfer = new ReqFundsResp();
 		try {
 			log.info("Transferring {} funds to user", req.getAmount());
-			//master account GDHRL4NWLAFGN7GYMTQADYK3ED3U2JNJE5DYHLM6BGEWAOR3FC5VHUPL
-			var masterAccount = "GDVE4ZHYDKPDSS7B6NV5IIKAW4P73TXKAZXARCK5QFFC22OWWXIIFHEU";
-			server.accounts().account(masterAccount);
+			server.accounts().account(secret);
 
 			if (Double.valueOf(accountImpl.checkBalance().getBalances().get(0).getBalance()) < Double.valueOf(req.getAmount())) {
 				log.error("could not transfer funds at this moment due to lack of funds");
 				throw new Exception("Not enough funds for this request, try again later");
 			}
 			AccountResponse sourceAccount = server.accounts().account(req.getPublicMasterAccount());
-			Transaction transaction = createTransaction(sourceAccount, masterAccount, req.getAmount(),req.getSourceSecret());
+			Transaction transaction = createTransaction(sourceAccount, secret, req.getAmount(),req.getSourceSecret());
 			response = server.submitTransaction(transaction);
-			log.info("Successfull transfer of funds {}", response.getHash());
+			log.info("Successfully transferred funds {}", response.getHash());
 			transfer.setAmount(req.getAmount());
-			transfer.setDestination(masterAccount);
+			transfer.setDestination(secret);
 			transfer.setFrom(req.getPublicMasterAccount());
 			Timestamp timeOfTransaction = new Timestamp(System.currentTimeMillis());
 			receiptRepo.save(new FundReceiptEntity(null,timeOfTransaction,req.getAmount(),req.getAdminUser(),req.getPatient(),"P"));
