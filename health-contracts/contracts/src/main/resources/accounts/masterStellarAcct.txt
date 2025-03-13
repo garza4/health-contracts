@@ -3,6 +3,6 @@ Fund master account using this URL and the acct_id
 https://laboratory.stellar.org/#account-creator?network=test
 {
     "message": "Keep these values in a secure location. They will not be saved on this system",
-    "secret": "SB2PCPG4JF2USEIEV5KEQCEZMZ4EI2JEVLZJCNJAMMFIMD4NJODH664C",
-    "acct_id": "GDVE4ZHYDKPDSS7B6NV5IIKAW4P73TXKAZXARCK5QFFC22OWWXIIFHEU"
+    "secret": "TEST_ACCT",
+    "acct_id": "ACCT_ID"
 }
